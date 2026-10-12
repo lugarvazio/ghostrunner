@@ -1203,14 +1203,26 @@ html,body{height:100dvh}
   const ptrs = new Map();
   root.addEventListener('pointerdown', e => {
     if (G.state !== 'play' || e.target.closest('button')) return;
-    ptrs.set(e.pointerId, { x: e.clientX, y: e.clientY, moved: false });
+    ptrs.set(e.pointerId, { x: e.clientX, y: e.clientY, moved: false, dir: 0, ext: e.clientX });
   });
+  // один свайп = одна полоса. Повторный сдвиг в ту же сторону — только после длинного дотягивания,
+  // разворот пальца в обратную сторону срабатывает сразу от крайней точки.
+  const SWIPE = 24, SWIPE_AGAIN = 120;
   root.addEventListener('pointermove', e => {
     const p = ptrs.get(e.pointerId);
     if (!p) return;
-    const dx = e.clientX - p.x, dy = e.clientY - p.y;
-    if (Math.abs(dx) > 28 && Math.abs(dx) > Math.abs(dy)) {
-      move(dx > 0 ? 1 : -1); p.x = e.clientX; p.y = e.clientY; p.moved = true;
+    const x = e.clientX, dx = x - p.x, dy = e.clientY - p.y;
+    if (p.dir) {
+      if ((x - p.ext) * p.dir > 0) p.ext = x;
+      if ((p.ext - x) * p.dir > SWIPE) {
+        move(-p.dir); p.dir = -p.dir; p.x = x; p.ext = x; return;
+      }
+      if (dx * p.dir > SWIPE_AGAIN) { move(p.dir); p.x = x; p.ext = x; }
+      return;
+    }
+    if (Math.abs(dx) > SWIPE && Math.abs(dx) > Math.abs(dy) * 0.8) {
+      p.dir = dx > 0 ? 1 : -1;
+      move(p.dir); p.x = x; p.ext = x; p.moved = true;
     } else if (dy < -40 && Math.abs(dy) > Math.abs(dx) && !p.moved) {
       toggle(); p.moved = true; p.y = e.clientY;
     }
@@ -1339,7 +1351,7 @@ html,body{height:100dvh}
     }
     if (booState.t < 1) booState.t += dt / 0.9;
 
-    pl.x += (pl.lane - pl.x) * Math.min(1, dt * 16);
+    pl.x += (pl.lane - pl.x) * Math.min(1, dt * 20);
     pl.phase += ((pl.ghost ? 1 : 0) - pl.phase) * Math.min(1, dt * 12);
     const faceTarget = G.state === 'play' || G.state === 'paused' ? 0 : 1;
     pl.face += (faceTarget - pl.face) * Math.min(1, dt * (faceTarget ? 7 : 6));
@@ -1364,8 +1376,10 @@ html,body{height:100dvh}
       for (const o of G.objs) {
         const z = o.w - G.dist;
         const inLane = Math.abs(pl.x - o.lane) < 0.55;
+        // для опасностей хитбокс уже, чтобы задевание краем при смене полосы прощалось
+        const hitLane = Math.abs(pl.x - o.lane) < 0.42;
         if (o.type === 'wall') {
-          if (inLane && z <= PZ + 0.25 && z + 0.45 >= PZ - 0.15) {
+          if (hitLane && z <= PZ + 0.2 && z + 0.45 >= PZ - 0.1) {
             if (G.armorT > 0) {
               o.broken = true; G.bonus += 5;
               const cols = [['#4e3d68', '#76619a', '#2a2038'], ['#6a6672', '#8a8794', '#c4743a'], ['#7a756e', '#5e5a54', '#4e6a3a']][locIdx(o.w)];
@@ -1375,7 +1389,7 @@ html,body{height:100dvh}
             } else if (!pl.ghost && !safe) { die('wall', o); break; }
           }
         } else if (o.type === 'light') {
-          if (pl.ghost && !safe && inLane && z <= PZ && z + o.len >= PZ) { die('light'); break; }
+          if (pl.ghost && !safe && hitLane && z <= PZ && z + o.len >= PZ) { die('light'); break; }
         } else if (o.type === 'coin' && !o.taken) {
           if (!pl.ghost && Math.abs(pl.x - o.lane) < 0.5 && Math.abs(z - PZ) < 0.45) {
             o.taken = true; G.coins++;
@@ -1481,7 +1495,7 @@ html,body{height:100dvh}
 
     const ph = pl.phase;
     const blink = G.grace > 0 && Math.sin(T * 30) > 0 ? 0.4 : 1;
-    ghostMat.opacity = (1 - 0.95 * ph) * blink;
+    ghostMat.opacity = (1 - 0.98 * ph) * blink;
     ghostMat.color.copy(BONE).lerp(MINT, ph * 0.6);
     ghostMat.emissive.copy(EMB).lerp(MINT, ph * 0.35);
     ghostMat.depthWrite = ph < 0.5;
