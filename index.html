@@ -1822,7 +1822,7 @@ html,body{height:100dvh}
   function removeObj(o) { if (o.mesh) { scene.remove(o.mesh); o.mesh = null; } }
 
   // ---------- состояние ----------
-  const TEST_ALL_LEVELS = true;
+  const TEST_ALL_LEVELS = false;
   let best = 0, unlocked = 1, selLevel = 0;
   try {
     best = parseInt(localStorage.getItem('casper-run-best'), 10) || 0;
