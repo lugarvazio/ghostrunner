@@ -62,11 +62,16 @@ html,body{height:100dvh}
 #cr .cr-bar.low i{background:var(--danger);box-shadow:0 0 10px var(--danger)}
 #cr .cr-bar.nope{animation:cr-nope .32s}
 @keyframes cr-nope{25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
-#cr .cr-wind{position:absolute;left:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));display:flex;align-items:flex-end;gap:10px;pointer-events:none;filter:drop-shadow(0 2px 6px rgba(0,0,0,.5))}
-#cr .cr-wind svg{width:116px;height:124px;overflow:visible;flex:none}
-#cr .cr-wind-txt{display:grid;gap:4px;padding-bottom:2px}
-#cr .cr-wind-txt span{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
-#cr .cr-wind-txt b{font:800 30px/1 var(--f-display);color:var(--bone);font-variant-numeric:tabular-nums}
+#cr .cr-wind{position:absolute;left:14px;bottom:calc(14px + env(safe-area-inset-bottom,0px));pointer-events:none;filter:drop-shadow(0 2px 6px rgba(0,0,0,.55))}
+#cr .cr-wind svg{width:128px;height:113px;overflow:visible;display:block}
+#cr .cr-ring{position:absolute;right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));width:76px;height:76px;pointer-events:none;display:grid;place-items:center;filter:drop-shadow(0 2px 8px rgba(0,0,0,.5))}
+#cr .cr-ring svg{position:absolute;inset:0;width:100%;height:100%}
+#cr .cr-ring #cr-ring-arc{transition:stroke .2s}
+#cr .cr-ring b{position:relative;font:800 19px/1 var(--f-display);font-variant-numeric:tabular-nums;color:var(--bone)}
+#cr .cr-ring b::after{content:'%';font-size:10px;margin-left:1px;opacity:.7}
+#cr .cr-ring.low #cr-ring-arc{stroke:var(--danger)}
+#cr .cr-ring.ghost b{color:var(--ecto)}
+#cr .cr-ring.nope{animation:cr-nope .32s}
 #cr .cr-icon-btn{pointer-events:auto;flex:none;width:38px;height:38px;border-radius:50%;border:1px solid var(--line);background:rgba(16,12,32,.55);color:var(--bone);display:grid;place-items:center;cursor:pointer;padding:0}
 #cr .cr-icon-btn svg{width:18px;height:18px}
 #cr .cr-icon-btn .off{display:none}
@@ -90,8 +95,8 @@ html,body{height:100dvh}
 #cr h1{font-size:clamp(34px,9.5vw,48px);letter-spacing:-.01em}
 #cr h1 em{display:block;font-style:normal;color:transparent;-webkit-text-stroke:1.6px var(--ecto);text-shadow:0 0 22px rgba(121,242,207,.45)}
 #cr h2{font-size:clamp(28px,8vw,38px)}
-#cr .cr-rules{list-style:none;margin:16px 0 0;padding:0;display:grid;gap:8px}
-#cr .cr-rules li{display:grid;grid-template-columns:26px 1fr;gap:10px;align-items:center;color:var(--muted);font-size:13px;line-height:1.3}
+#cr .cr-rules{list-style:none;margin:14px 0 0;padding:0;display:grid;gap:6px}
+#cr .cr-rules li{display:grid;grid-template-columns:26px 1fr;gap:10px;align-items:center;color:var(--muted);font-size:12.5px;line-height:1.3}
 #cr .cr-rules b{color:var(--bone);font-weight:600}
 #cr .ic{width:26px;height:26px;border-radius:7px}
 #cr .ic-wall{background:linear-gradient(#62d6ff 0 0) 50% 0/100% 2px no-repeat,linear-gradient(#62d6ff 0 0) 50% 58%/60% 2px no-repeat,#dfe3ea}
@@ -111,6 +116,17 @@ html,body{height:100dvh}
 #cr .cr-stat.coin b{color:var(--amber)}
 #cr .cr-newbest{margin:12px 0 0;color:var(--ecto);font-weight:600;font-size:14px}
 #cr .cr-error{margin:14px 0 0;color:var(--danger);font-size:13px}
+#cr .cr-btn-ghost{margin-top:8px;background:transparent;color:var(--bone);border:1px solid var(--line);box-shadow:none}
+#cr .cr-lvl-title{margin:14px 0 8px;display:flex;justify-content:space-between;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+#cr .cr-lvl-title span{letter-spacing:.04em;text-transform:none;font-variant-numeric:tabular-nums}
+#cr .cr-levels{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}
+#cr .cr-lvl{position:relative;min-width:0;aspect-ratio:1/1.08;border-radius:11px;border:1px solid var(--line);background:rgba(241,235,221,.05);color:var(--bone);padding:5px 3px 4px;display:grid;grid-template-rows:1fr auto;place-items:center;cursor:pointer;font:inherit}
+#cr .cr-lvl b{font:800 17px/1 var(--f-display);font-variant-numeric:tabular-nums}
+#cr .cr-lvl small{font-size:8.5px;line-height:1.1;color:var(--muted);max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#cr .cr-lvl.sel{border-color:var(--ecto);box-shadow:0 0 0 1px var(--ecto) inset,0 0 14px rgba(121,242,207,.25)}
+#cr .cr-lvl.sel b{color:var(--ecto)}
+#cr .cr-lvl:disabled{cursor:not-allowed;opacity:.42}
+#cr .cr-lvl svg{width:14px;height:16px}
 </style>
 </head>
 <body>
@@ -126,10 +142,6 @@ html,body{height:100dvh}
       <div class="cr-level"><span id="cr-level-name">Город</span><span class="cr-dots" id="cr-dots"><i></i><i></i><i></i><i></i><i></i></span></div>
     </div>
     <div class="cr-right">
-      <div class="cr-energy">
-        <div class="cr-energy-label">Эктоплазма</div>
-        <div class="cr-bar" id="cr-bar"><i id="cr-energy"></i></div>
-      </div>
       <button class="cr-icon-btn" id="cr-mute" type="button" aria-label="Звук">
         <svg class="on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h4l5-4v14l-5-4H4z"/><path d="M16.5 8.5a5 5 0 0 1 0 7"/><path d="M19 6a8.5 8.5 0 0 1 0 12"/></svg>
         <svg class="off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h4l5-4v14l-5-4H4z"/><path d="M17 9l5 6M22 9l-5 6"/></svg>
@@ -138,19 +150,22 @@ html,body{height:100dvh}
   </div>
 
   <!-- колдунчик: крупный, в левом нижнем углу -->
+  <!-- колдунчик: надутые ветром полосы стоят горизонтально, остальные свисают (полосы собираются в JS) -->
   <div class="cr-wind" id="cr-wind" aria-label="Сила ветра" hidden>
-    <svg viewBox="0 0 60 64" aria-hidden="true">
-      <line x1="4" y1="2" x2="4" y2="62" stroke="#c9c2e0" stroke-width="2.5" stroke-linecap="round"/>
-      <circle cx="4" cy="3" r="2.6" fill="#f1ebdd"/>
-      <g id="cr-sock">
-        <polygon class="seg" points="6,-2 16,-1.4 16,9.4 6,10" fill="#ff7a2e"/>
-        <polygon class="seg" points="16,-1.4 26,-0.8 26,8.8 16,9.4" fill="#f1ebdd"/>
-        <polygon class="seg" points="26,-0.8 36,-0.2 36,8.2 26,8.8" fill="#ff7a2e"/>
-        <polygon class="seg" points="36,-0.2 46,0.4 46,7.6 36,8.2" fill="#f1ebdd"/>
-        <polygon class="seg" points="46,0.4 56,1 56,7 46,7.6" fill="#ff7a2e"/>
-      </g>
+    <svg viewBox="-4 -8 70 62" aria-hidden="true">
+      <line x1="2" y1="2" x2="2" y2="30" stroke="#c9c2e0" stroke-width="2.4" stroke-linecap="round"/>
+      <circle cx="2" cy="2.5" r="2.4" fill="#f1ebdd"/>
+      <g id="cr-sock" transform="translate(3 3)"></g>
     </svg>
-    <div class="cr-wind-txt"><span>Ветер</span><b id="cr-wind-val">1</b></div>
+  </div>
+
+  <!-- эктоплазма: круговая шкала с процентом -->
+  <div class="cr-ring" id="cr-ring" hidden>
+    <svg viewBox="0 0 80 80" aria-hidden="true">
+      <circle cx="40" cy="40" r="32" fill="rgba(16,12,32,.55)" stroke="rgba(241,235,221,.14)" stroke-width="7"/>
+      <circle id="cr-ring-arc" cx="40" cy="40" r="32" fill="none" stroke="#79f2cf" stroke-width="7" stroke-linecap="round" transform="rotate(-90 40 40)" stroke-dasharray="201.06" stroke-dashoffset="0"/>
+    </svg>
+    <b id="cr-ring-val">100</b>
   </div>
 
   <div class="cr-chip is-armor" id="cr-chip" hidden>Доспехи</div>
@@ -167,6 +182,8 @@ html,body{height:100dvh}
         <li><span class="ic ic-svg"><svg viewBox="0 0 28 28" aria-hidden="true"><line x1="3" y1="3" x2="3" y2="27" stroke="#aaa3c6" stroke-width="2"/><path d="M4 5l20 2v6L4 15z" fill="#ff7a2e"/><path d="M11 5.7l6 .6v6.1l-6 .9z" fill="#f1ebdd"/></svg></span><span><b>Ветер</b> разгоняет привидение — следи за колдунчиком</span></li>
       </ul>
       <p class="cr-controls">Свайп влево и вправо меняет полосу, тап меняет форму. На клавиатуре: стрелки и пробел.</p>
+      <p class="cr-lvl-title">Уровни <span id="cr-lvl-count">1 из 10</span></p>
+      <div class="cr-levels" id="cr-levels"></div>
       <button class="cr-btn" id="cr-play" type="button">Играть</button>
       <p class="cr-best">Рекорд: <span id="cr-best">0</span></p>
       <p class="cr-error" id="cr-error" hidden>Браузер не поддерживает WebGL, поэтому 3D-графика не запустится.</p>
@@ -183,7 +200,9 @@ html,body{height:100dvh}
         <div class="cr-stat"><span>Рекорд</span><b id="cr-f-best">0</b></div>
       </div>
       <p class="cr-newbest" id="cr-newbest" hidden>Новый рекорд!</p>
+      <p class="cr-newbest" id="cr-unlocked" hidden></p>
       <button class="cr-btn" id="cr-again" type="button">Ещё раз</button>
+      <button class="cr-btn cr-btn-ghost" id="cr-to-levels" type="button">Уровни</button>
     </div>
   </div>
 
@@ -203,10 +222,11 @@ html,body{height:100dvh}
   const $ = id => document.getElementById(id);
   const ui = {
     hud: root.querySelector('.cr-hud'), score: $('cr-score'), coins: $('cr-coins'),
-    bar: $('cr-bar'), energy: $('cr-energy'), chip: $('cr-chip'), mute: $('cr-mute'),
+    ring: $('cr-ring'), ringArc: $('cr-ring-arc'), ringVal: $('cr-ring-val'), chip: $('cr-chip'), mute: $('cr-mute'),
+    levels: $('cr-levels'), lvlCount: $('cr-lvl-count'), play: $('cr-play'), unlocked: $('cr-unlocked'),
     toast: $('cr-toast'), toastName: $('cr-toast-name'), toastSub: $('cr-toast-sub'),
     levelName: $('cr-level-name'), dots: Array.from($('cr-dots').children),
-    wind: $('cr-wind'), sock: $('cr-sock'), segs: Array.from($('cr-sock').children), windVal: $('cr-wind-val'),
+    wind: $('cr-wind'), sock: $('cr-sock'),
     menu: $('cr-menu'), over: $('cr-over'), pause: $('cr-pause'), best: $('cr-best'),
     cause: $('cr-cause'), fScore: $('cr-f-score'), fCoins: $('cr-f-coins'), fBest: $('cr-f-best'), newBest: $('cr-newbest')
   };
@@ -296,7 +316,7 @@ html,body{height:100dvh}
 
   // ---------- константы мира ----------
   // Мир: x — полосы (-1, 0, 1), y — вверх, вперёд — минус z. Дистанция w в логике = -z в сцене.
-  const PZ = 1.3, FAR = 100, TILES_AHEAD = 135, WORLD_AHEAD = 320, HALF = 1.75, TL = 9, LOC_LEN = 423, CL = 47;
+  const PZ = 1.3, FAR = 100, TILES_AHEAD = 135, WORLD_AHEAD = 320, HALF = 1.75, TL = 9, LOC_LEN = 846, CL = 47;
   const STAGE_LEN = LOC_LEN / 5;
   let WIND = 0; // текущая сила ветра 0..1, доступна моделям ещё до создания состояния игры
   const ARMOR_TIME = 6;
@@ -312,7 +332,12 @@ html,body{height:100dvh}
     { key: 'garden', name: 'Сад', top: '#030908', fog: '#1b3f35', low: '#0a1a16', mount: '#0d2520', path: '#5a5a4c', side: '#23241d', edge: '#c6ff7d', death: 'Врезался в камень', bits: ['#8fc46a', '#c8e07a', '#5e9a4a'] },
     { key: 'cemetery', name: 'Кладбище', top: '#04050a', fog: '#26303a', low: '#0d1217', mount: '#121a20', path: '#3f3e3b', side: '#191918', edge: '#8affd8', death: 'Врезался в надгробие', bits: ['#b08a5a', '#8a6a44', '#c9a46a'] },
     { key: 'castle', name: 'Замок', top: '#05040f', fog: '#2a2452', low: '#120f26', mount: '#151129', path: '#4b4470', side: '#1c1731', edge: '#ffb35a', death: 'Врезался в колонну', bits: ['#ffb35a', '#ff8a3a'] },
-    { key: 'farm', name: 'Ферма', top: '#07050a', fog: '#36281f', low: '#140e0b', mount: '#1d1612', path: '#5e4b36', side: '#2a2118', edge: '#ffa040', death: 'Врезался в тыкву', bits: ['#e8c46a', '#d6a84a', '#f2dc8a'] }
+    { key: 'farm', name: 'Ферма', top: '#07050a', fog: '#36281f', low: '#140e0b', mount: '#1d1612', path: '#5e4b36', side: '#2a2118', edge: '#ffa040', death: 'Врезался в тыкву', bits: ['#e8c46a', '#d6a84a', '#f2dc8a'] },
+    { key: 'subway', name: 'Метро', top: '#05060a', fog: '#1b1e26', low: '#08090c', mount: '#0d0f14', path: '#3a3d44', side: '#15171b', edge: '#ffd34a', death: 'Врезался в пассажира', bits: ['#e8e6df', '#c9c6bd'], enclosed: true },
+    { key: 'cave', name: 'Пещера', top: '#040306', fog: '#1d1824', low: '#0a080c', mount: '#120f16', path: '#4a4038', side: '#1c1814', edge: '#b48aff', death: 'Врезался в завал', bits: ['#9a8a78', '#7a6c5c'], enclosed: true },
+    { key: 'forest', name: 'Лес', top: '#020705', fog: '#13271e', low: '#07120d', mount: '#0b1b14', path: '#4a3e2e', side: '#1e1912', edge: '#9dff8a', death: 'Врезался в дерево', bits: ['#c98a3a', '#a7c45a', '#8a5a2a'] },
+    { key: 'clouds', name: 'Облака', top: '#070a1c', fog: '#36437a', low: '#1c2240', mount: '#2a3360', path: '#a9b2d6', side: '#6c76a0', edge: '#d0c0ff', death: 'Врезался в вершину горы', bits: ['#ffffff', '#dfe6ff'] },
+    { key: 'beach', name: 'Пляж', top: '#030810', fog: '#163149', low: '#08121c', mount: '#0d2236', path: '#c2ad86', side: '#5e5240', edge: '#4affe0', death: 'Врезался в пальму', bits: ['#e6d3a8', '#cdb98a'] }
   ].map(l => Object.assign(l, { cTop: C(l.top), cFog: C(l.fog), cLow: C(l.low), cMount: C(l.mount) }));
   const segOf = w => Math.floor(Math.max(0, w) / LOC_LEN);
   const locIdx = w => segOf(w) % LOCS.length;
@@ -372,9 +397,24 @@ html,body{height:100dvh}
         g.fillStyle = 'rgba(255,255,255,.55)';
         for (const u of [1 / 3, 2 / 3]) g.fillRect(u * w - 2, 30, 4, 120);
         g.fillStyle = 'rgba(0,0,0,.35)'; g.fillRect(0, 0, w, 2);
-      } else if (key === 'garden') {
-        for (let i = 0; i < 1400; i++) { g.fillStyle = `rgba(0,0,0,${rr() * 0.16})`; g.beginPath(); g.arc(rr() * w, rr() * h, 1 + rr() * 2, 0, 6.283); g.fill(); }
+      } else if (key === 'garden' || key === 'forest' || key === 'cave') {
+        const dots = key === 'cave' ? 2200 : 1400;
+        for (let i = 0; i < dots; i++) { g.fillStyle = `rgba(0,0,0,${rr() * (key === 'cave' ? 0.22 : 0.16)})`; g.beginPath(); g.arc(rr() * w, rr() * h, 1 + rr() * (key === 'cave' ? 4 : 2), 0, 6.283); g.fill(); }
+        if (key === 'forest') for (let i = 0; i < 40; i++) { g.fillStyle = `rgba(60,90,30,${0.2 + rr() * 0.3})`; g.beginPath(); g.ellipse(rr() * w, rr() * h, 3 + rr() * 4, 1.5 + rr() * 2, rr() * 3, 0, 6.283); g.fill(); }
         g.fillStyle = 'rgba(0,0,0,.25)'; g.fillRect(0, 0, w, 2);
+      } else if (key === 'subway') {
+        // рифлёный пол вагона и жёлтая линия у дверей
+        g.fillStyle = 'rgba(0,0,0,.12)';
+        for (let y = 0; y < h; y += 8) g.fillRect(0, y, w, 3);
+        g.fillStyle = 'rgba(0,0,0,.4)'; g.fillRect(0, 0, w, 2);
+      } else if (key === 'clouds') {
+        for (let i = 0; i < 260; i++) { const r = 8 + rr() * 22; const gr = g.createRadialGradient(0, 0, 0, 0, 0, r); gr.addColorStop(0, 'rgba(255,255,255,.18)'); gr.addColorStop(1, 'rgba(255,255,255,0)'); g.save(); g.translate(rr() * w, rr() * h); g.fillStyle = gr; g.fillRect(-r, -r, r * 2, r * 2); g.restore(); }
+        for (let i = 0; i < 120; i++) { g.fillStyle = `rgba(80,90,140,${rr() * 0.12})`; g.beginPath(); g.arc(rr() * w, rr() * h, 6 + rr() * 14, 0, 6.283); g.fill(); }
+      } else if (key === 'beach') {
+        // песок с рябью от ветра
+        for (let i = 0; i < 2000; i++) { g.fillStyle = `rgba(0,0,0,${rr() * 0.1})`; g.fillRect(rr() * w, rr() * h, 1.5, 1.5); }
+        g.strokeStyle = 'rgba(0,0,0,.12)'; g.lineWidth = 2;
+        for (let y = 6; y < h; y += 12) { g.beginPath(); g.moveTo(0, y); for (let x = 0; x <= w; x += 16) g.lineTo(x, y + Math.sin(x * 0.05 + y) * 3); g.stroke(); }
       } else {
         for (let i = 0; i < 1800; i++) { g.fillStyle = `rgba(0,0,0,${rr() * 0.14})`; g.fillRect(rr() * w, rr() * h, 3, 1 + rr() * 3); }
         g.fillStyle = 'rgba(0,0,0,.22)';
@@ -472,6 +512,46 @@ html,body{height:100dvh}
     stem: std({ color: C('#3f5a22'), roughness: 0.9 }),
     carve: basic({ color: HDR('#ffcc55', 3), side: THREE.DoubleSide }),
     runeCity: basic({ color: HDR('#62d6ff', 2.6) }),
+    // метро
+    carPanel: std({ color: C('#b9bec8'), metalness: 0.3, roughness: 0.45 }),
+    carDark: std({ color: C('#2a2d35'), roughness: 0.7 }),
+    seat: std({ color: C('#2f4f8f'), roughness: 0.8 }),
+    ceiling: std({ color: C('#d4d7de'), roughness: 0.6 }),
+    lightStrip: basic({ color: HDR('#fff3dc', 2.6) }),
+    glass: basic({ color: C('#0a0d14'), transparent: true, opacity: 0.35, side: THREE.DoubleSide, depthWrite: false }),
+    chrome: std({ color: C('#d8dce4'), metalness: 0.8, roughness: 0.25 }),
+    tunnel: std({ color: C('#16181d'), roughness: 1 }),
+    tunnelLamp: basic({ color: HDR('#ffd9a0', 3) }),
+    bellows: std({ color: C('#1a1c22'), roughness: 0.9 }),
+    skin: std({ color: C('#e3c3a6'), roughness: 0.8, emissive: C('#3a2a20'), emissiveIntensity: 0.4 }),
+    pants: std({ color: C('#2c2f3a'), roughness: 0.9 }),
+    coats: ['#9fb4dc', '#dca6a0', '#a9d0a0', '#e0c896', '#b9a6dc', '#9fd4cc'].map(c => std({ color: C(c), roughness: 0.75, emissive: C(c), emissiveIntensity: 0.18 })),
+    phone: basic({ color: HDR('#bfe6ff', 2.2) }),
+    // пещера
+    caveRock: std({ color: C('#2e2830'), roughness: 1, flatShading: true }),
+    rubble: std({ color: C('#cbbfae'), roughness: 0.95, flatShading: true, emissive: C('#3a3026'), emissiveIntensity: 0.5 }),
+    crystal: basic({ color: HDR('#b48aff', 2.2) }),
+    crystal2: basic({ color: HDR('#6fe0ff', 2.2) }),
+    // лес
+    bark: std({ color: C('#cfb391'), roughness: 0.95, emissive: C('#3a2c1c'), emissiveIntensity: 0.55 }),
+    canopy: std({ color: C('#2f6a3a'), roughness: 0.9, flatShading: true, emissive: C('#0f2a14'), emissiveIntensity: 0.6 }),
+    forestDark: std({ color: C('#0a1a12'), roughness: 1, flatShading: true }),
+    fern: std({ color: C('#1f4a2a'), roughness: 0.9, flatShading: true, side: THREE.DoubleSide }),
+    moonbeam: add(C('#bcd4ff'), 0.06),
+    // облака
+    cloud: std({ color: C('#c9d0ea'), roughness: 1, emissive: C('#3a4470'), emissiveIntensity: 0.6 }),
+    cloudFar: std({ color: C('#7f8ab8'), roughness: 1, emissive: C('#222a50'), emissiveIntensity: 0.5 }),
+    peak: std({ color: C('#b7aed6'), roughness: 0.9, flatShading: true, emissive: C('#3a3460'), emissiveIntensity: 0.55 }),
+    peakFar: std({ color: C('#3e3a66'), roughness: 1, flatShading: true }),
+    snow: std({ color: C('#ffffff'), roughness: 0.8, emissive: C('#7f88b8'), emissiveIntensity: 0.6, flatShading: true }),
+    // пляж
+    water: std({ color: C('#0b2a3c'), roughness: 0.18, metalness: 0.4 }),
+    sand: std({ color: C('#7a6a50'), roughness: 1 }),
+    foam: add(C('#bff6ff'), 0.35, null),
+    palmTrunk: std({ color: C('#dcc39a'), roughness: 0.9, emissive: C('#3e3020'), emissiveIntensity: 0.55 }),
+    palmLeaf: std({ color: C('#3f9a52'), roughness: 0.8, side: THREE.DoubleSide, emissive: C('#123a1c'), emissiveIntensity: 0.6, flatShading: true }),
+    palmDark: std({ color: C('#0c1f1a'), roughness: 1, side: THREE.DoubleSide, flatShading: true }),
+    coconut: std({ color: C('#5a3a20'), roughness: 0.9 }),
     moss: std({ color: C('#4e6a3a'), roughness: 1, flatShading: true }),
     coin: std({ color: C('#ffb84d'), metalness: 0.6, roughness: 0.3, emissive: C('#ff9a2a'), emissiveIntensity: 1.3, transparent: true }),
     coinRim: std({ color: C('#c47a14'), metalness: 0.6, roughness: 0.4, emissive: C('#7a4300'), transparent: true }),
@@ -572,6 +652,17 @@ html,body{height:100dvh}
     pumpMouth: triShape([-0.18, 0.02, 0.18, 0.02, 0.12, -0.06, 0.06, -0.02, 0, -0.08, -0.06, -0.02, -0.12, -0.06]),
     spike: new THREE.ConeGeometry(0.025, 0.12, 4),
     hayBale: new THREE.CylinderGeometry(0.45, 0.45, 0.8, 14),
+    torso: (() => {
+      // торс пассажира: мягкая «капсула», без лиц и деталей — аккуратный стилизованный силуэт
+      const pr = [[0.001, 0], [0.16, 0.02], [0.2, 0.12], [0.21, 0.4], [0.19, 0.56], [0.12, 0.64], [0.001, 0.66]].map(p => new THREE.Vector2(p[0], p[1]));
+      return new THREE.LatheGeometry(pr, 20);
+    })(),
+    limb: new THREE.CylinderGeometry(0.055, 0.06, 1, 10),
+    headS: new THREE.SphereGeometry(0.13, 18, 14),
+    octa: new THREE.OctahedronGeometry(1, 0),
+    handle: new THREE.TorusGeometry(0.06, 0.012, 6, 16),
+    cloudPuff: new THREE.IcosahedronGeometry(1, 2),
+    leaf: (() => { const g = new THREE.PlaneGeometry(0.22, 1.1, 1, 4); g.translate(0, 0.55, 0); const p = g.attributes.position; for (let i = 0; i < p.count; i++) { const y = p.getY(i); p.setZ(i, -y * y * 0.35); p.setX(i, p.getX(i) * (1 - y * 0.6)); } g.computeVertexNormals(); return g; })(),
     blade: new THREE.BoxGeometry(0.5, 5, 0.08),
     rocks: [0, 1, 2].map(i => {
       const g = new THREE.IcosahedronGeometry(1, 1);
@@ -687,7 +778,7 @@ html,body{height:100dvh}
           flick(sp, 1.3, hash(k * 5 + s) * 9);
         }
       }
-      if (k % 5 === 2) { const s = hash(k) < 0.5 ? -1 : 1; g.add(mesh(GEO.merlon, M.stoneLow, s * 1.55, 0.25, -6.5)); }
+      if (k % 5 === 2) { const s = hash(k) < 0.5 ? -1 : 1; g.add(mesh(GEO.merlon, M.stoneLow, s * 1.98, 0.25, -6.5)); }
     } else if (key === 'city') {
       const s = k % 2 ? 1 : -1;
       g.add(mesh(GEO.post, M.post, s * 1.62, 1.7, -2));
@@ -764,6 +855,111 @@ html,body{height:100dvh}
       const lan = mesh(GEO.lanternHead, M.carve, s * 1.7, 1.0, -3); lan.scale.set(1.6, 1.3, 1.6); g.add(lan);
       const lsp = glowSprite('#ffa040', 1.1, 0.55); lsp.position.copy(lan.position); g.add(lsp);
       flick(lsp, 1.1, k * 1.3);
+    } else if (key === 'subway') {
+      // вагон метро: стенки с окнами, сиденья, поручни, светящиеся полосы на потолке; за окнами — тоннель с фонарями
+      for (const s of [-1, 1]) {
+        const low = mesh(GEO.unitBox, M.carPanel, s * 1.9, 0.5, -TL / 2); low.scale.set(0.08, 1.0, TL); g.add(low);
+        const up = mesh(GEO.unitBox, M.carPanel, s * 1.9, 2.55, -TL / 2); up.scale.set(0.08, 0.9, TL); g.add(up);
+        const gl = mesh(GEO.unitBox, M.glass, s * 1.9, 1.55, -TL / 2); gl.scale.set(0.02, 1.0, TL); g.add(gl);
+        for (const z of [0, -2.25, -4.5, -6.75]) { const mu = mesh(GEO.unitBox, M.carDark, s * 1.88, 1.55, z); mu.scale.set(0.1, 1.04, 0.12); g.add(mu); }
+        const seat = mesh(GEO.unitBox, M.seat, s * 1.72, 0.24, -TL / 2 - 0.3); seat.scale.set(0.3, 0.46, TL * 0.62); g.add(seat);
+        const back = mesh(GEO.unitBox, M.seat, s * 1.84, 0.62, -TL / 2 - 0.3); back.scale.set(0.08, 0.5, TL * 0.62); g.add(back);
+        // поручни и петли выше камеры, чтобы не мелькали перед глазами
+        const rail = mesh(GEO.cyl, M.chrome, s * 1.05, 2.85, -TL / 2); rail.scale.set(0.025, TL, 0.025); rail.rotation.x = Math.PI / 2; g.add(rail);
+        for (let z = -0.6; z > -TL; z -= 1.1) { const hd = mesh(GEO.handle, M.chrome, s * 1.05, 2.73, z); g.add(hd); }
+        const pole = mesh(GEO.cyl, M.chrome, s * 1.64, 1.5, -1.3); pole.scale.set(0.03, 3, 0.03); g.add(pole);
+        const tw = mesh(GEO.unitBox, M.tunnel, s * 3.4, 1.5, -TL / 2); tw.scale.set(0.2, 4, TL); g.add(tw);
+        const tl = mesh(GEO.unitBox, M.tunnelLamp, s * 3.28, 1.7, -4.5); tl.scale.set(0.05, 0.12, 0.5); g.add(tl);
+        const tsp = glowSprite('#ffd9a0', 1.2, 0.6); tsp.position.copy(tl.position); g.add(tsp);
+      }
+      const ceil = mesh(GEO.unitBox, M.ceiling, 0, 3.05, -TL / 2); ceil.scale.set(3.9, 0.1, TL); g.add(ceil);
+      for (const s of [-1, 1]) { const ls = mesh(GEO.unitBox, M.lightStrip, s * 0.6, 2.99, -TL / 2); ls.scale.set(0.22, 0.03, TL * 0.94); g.add(ls); }
+      if (k % 2 === 0) {
+        // переход между вагонами: рамка с гармошкой, проём шире всех трёх полос
+        for (const s of [-1, 1]) {
+          const fr = mesh(GEO.unitBox, M.carDark, s * 1.75, 1.5, 0); fr.scale.set(0.35, 3, 0.4); g.add(fr);
+          for (let i = 0; i < 4; i++) { const b = mesh(GEO.unitBox, M.bellows, s * 1.8, 1.5, 0.3 + i * 0.12); b.scale.set(0.3, 3, 0.05); g.add(b); }
+        }
+        const top = mesh(GEO.unitBox, M.carDark, 0, 2.92, 0); top.scale.set(3.9, 0.3, 0.4); g.add(top);
+      }
+    } else if (key === 'cave') {
+      // пещера: каменные стены и свод не ниже 2,9 м, сталактиты, светящиеся кристаллы, редкие факелы
+      for (const s of [-1, 1]) for (let i = 0; i < 3; i++) {
+        const h = hash(k * 17 + s * 3 + i), sc = 1.3 + h * 0.5;
+        // только поворот вокруг вертикали: иначе вытянутый камень может «лечь» на дорожку
+        const r = mesh(GEO.rocks[i % 3], M.caveRock, s * (4.35 + h * 0.4), 0.6 + h * 1.6, -1.5 - i * 3);
+        r.scale.set(sc, sc * 1.3, sc * 1.1); r.rotation.y = h * 5; g.add(r);
+      }
+      for (let i = 0; i < 3; i++) {
+        const h = hash(k * 29 + i), sc = 1.5 + h * 0.6;
+        const r = mesh(GEO.rocks[(i + 1) % 3], M.caveRock, (h - 0.5) * 3, 5.45 + h * 0.6, -1.5 - i * 3);
+        r.scale.set(sc * 1.4, sc, sc * 1.2); r.rotation.y = h * 2; g.add(r);
+      }
+      for (let i = 0; i < 4; i++) {
+        const h = hash(k * 37 + i), len = 0.4 + h * 0.4;
+        const st = mesh(GEO.cone, M.caveRock, (h - 0.5) * 3.6, 3.75 - len / 2, -0.8 - i * 2.2 - h);
+        st.scale.set(0.16, len, 0.16); st.rotation.x = Math.PI; g.add(st);
+      }
+      for (const s of [-1, 1]) if (hash(k * 5 + s) < 0.7) {
+        const h = hash(k * 43 + s), z = -1 - h * 7, cm = h < 0.5 ? M.crystal : M.crystal2;
+        for (let j = 0; j < 4; j++) {
+          const cr = mesh(GEO.octa, cm, s * (2.05 + j * 0.12), 0.18 + j * 0.06, z + (j - 1.5) * 0.18);
+          cr.scale.set(0.07, 0.24 + j * 0.05, 0.07); cr.rotation.z = s * (0.3 - j * 0.15); g.add(cr);
+        }
+        const sp = glowSprite(h < 0.5 ? '#b48aff' : '#6fe0ff', 1.4, 0.55); sp.position.set(s * 2.1, 0.35, z); g.add(sp);
+        flick(sp, 1.4, h * 9);
+      }
+      if (k % 3 === 0) {
+        const s = k % 2 ? 1 : -1;
+        const f = mesh(GEO.flame, M.flame, s * 2.15, 1.9, -4.5); f.scale.set(1.3, 2, 1.3); g.add(f);
+        const sp = glowSprite('#ffa54a', 1.8, 0.55); sp.position.copy(f.position); g.add(sp);
+        flick(sp, 1.8, k * 1.1);
+      }
+    } else if (key === 'forest') {
+      // лес: высокие деревья у самой дорожки, папоротники, лунные лучи и светлячки
+      for (const s of [-1, 1]) for (let i = 0; i < 3; i++) {
+        const h = hash(k * 13 + s * 5 + i);
+        const x = s * (3.2 + h * 3), z = -1 - i * 3 - h, th = 6 + h * 5, tr = 0.9 + h * 0.6;
+        const tk = mesh(GEO.cyl, M.trunk, x, 1.2, z); tk.scale.set(0.2, 2.4, 0.2); g.add(tk);
+        for (let j = 0; j < 3; j++) {
+          const c = mesh(GEO.tree, M.forestDark, x, 2.2 + j * th * 0.22 + th * 0.18, z); c.scale.set(tr * (1 - j * 0.25), th * 0.38, tr * (1 - j * 0.25)); g.add(c);
+        }
+      }
+      for (const s of [-1, 1]) for (let i = 0; i < 2; i++) {
+        const h = hash(k * 19 + s + i * 7);
+        const f = mesh(GEO.bush, M.fern, s * (2.0 + h * 0.5), 0.15, -2 - i * 4 - h); f.scale.set(0.45, 0.2, 0.45); g.add(f);
+      }
+      if (hash(k * 3) < 0.5) {
+        // лунный луч — сбоку от тропы, чтобы его не путали с препятствием
+        const b = mesh(GEO.cone, M.moonbeam, (hash(k * 7) < 0.5 ? -1 : 1) * (3.2 + hash(k * 9) * 2), 3.5, -4); b.scale.set(1.2, 7, 1.2); g.add(b);
+      }
+      for (let i = 0; i < 2; i++) {
+        const h = hash(k * 41 + i);
+        const sp = glowSprite('#d8ff8a', 0.32, 0.9);
+        const base = new THREE.Vector3((h - 0.5) * 7, 0.5 + h * 1.6, -1 - hash(h * 7) * 7);
+        sp.position.copy(base); g.add(sp);
+        flick(sp, 0.32, h * 20, { fly: base });
+      }
+    } else if (key === 'clouds') {
+      // облака: дорожка-облако, по краям пушистые клубы чуть ниже уровня пути
+      for (const s of [-1, 1]) for (let i = 0; i < 4; i++) {
+        const h = hash(k * 23 + s * 3 + i), sc = 0.55 + h * 0.5;
+        const p = mesh(GEO.cloudPuff, M.cloud, s * (2.3 + h * 0.8), -0.45 + h * 0.2, -1 - i * 2.3 - h);
+        p.scale.set(sc * 1.4, sc * 0.7, sc); g.add(p);
+      }
+      for (let i = 0; i < 3; i++) {
+        const h = hash(k * 31 + i), sc = 0.9 + h * 0.8;
+        const p = mesh(GEO.cloudPuff, M.cloud, (h - 0.5) * 1.2, -0.85, -1.5 - i * 3);
+        p.scale.set(2.2 + sc, 0.55, sc * 1.4); g.add(p);
+      }
+    } else if (key === 'beach') {
+      // пляж: факелы тики вдоль дорожки и ракушки
+      const s = k % 2 ? 1 : -1;
+      const pole = mesh(GEO.unitBox, M.wood, s * 1.78, 0.7, -3); pole.scale.set(0.07, 1.4, 0.07); g.add(pole);
+      const cup = mesh(GEO.cyl, M.straw, s * 1.78, 1.45, -3); cup.scale.set(0.09, 0.16, 0.09); g.add(cup);
+      const f = mesh(GEO.flame, M.flame, s * 1.78, 1.62, -3); f.scale.set(1.4, 2.2, 1.4); g.add(f);
+      const sp = glowSprite('#ffa54a', 1.6, 0.55); sp.position.copy(f.position); g.add(sp);
+      flick(sp, 1.6, k * 1.9);
     }
     scene.add(g);
     return g;
@@ -881,6 +1077,53 @@ html,body{height:100dvh}
           g.add(hub); g.userData.spin.push(hub);
         }
         const gr = mesh(GEO.groundStrip, M.field, side * 352, -0.06, -CL / 2); gr.rotation.x = -Math.PI / 2; g.add(gr);
+      } else if (key === 'forest') {
+        // густой лес: ряды тёмных елей уходят в туман
+        for (let i = 0; i < 14; i++) {
+          const x = side * (7 + rr() * 40), z = -rr() * CL, th = 7 + rr() * 9, tr = 1.3 + rr() * 1.4;
+          const t = mesh(GEO.tree, M.forestDark, x, th / 2 + 1, z); t.scale.set(tr, th, tr); g.add(t);
+        }
+        for (let i = 0; i < 3; i++) {
+          const sp = glowSprite('#d8ff8a', 0.5, 0.9);
+          const base = new THREE.Vector3(side * (4 + rr() * 12), 0.6 + rr() * 2.5, -rr() * CL);
+          sp.position.copy(base); g.add(sp);
+          g.userData.blink.push({ s: sp, ph: rr() * 20, fly: base });
+        }
+        const gr = mesh(GEO.groundStrip, M.ground, side * 352, -0.06, -CL / 2); gr.rotation.x = -Math.PI / 2; g.add(gr);
+      } else if (key === 'clouds') {
+        // море облаков ниже дорожки и снежные вершины, пробивающие облака вдали
+        for (let i = 0; i < 7; i++) {
+          // край клуба всегда в стороне от дорожки, верх — ниже её уровня
+          const sc = 3 + rr() * 6, x = side * (4 + sc * 1.6 * 1.15 + rr() * 40), z = -rr() * CL;
+          const p = mesh(GEO.cloudPuff, rr() < 0.5 ? M.cloud : M.cloudFar, x, -1.2 - sc * 0.55, z); p.scale.set(sc * 1.6, sc * 0.45, sc); g.add(p);
+        }
+        if (rr() < 0.7) {
+          const x = side * (16 + rr() * 50), z = -rr() * CL, h = 10 + rr() * 22, r = 4 + rr() * 6;
+          const m = mesh(GEO.cone, M.peakFar, x, -6 + h / 2, z); m.scale.set(r, h, r); m.rotation.y = rr() * 3; g.add(m);
+          const cap = mesh(GEO.cone, M.snow, x, -6 + h - h * 0.12, z); cap.scale.set(r * 0.32, h * 0.25, r * 0.32); cap.rotation.y = m.rotation.y; g.add(cap);
+        }
+      } else if (key === 'beach') {
+        // справа море с лунной дорожкой и прибоем, слева дюны и пальмы
+        if (side > 0) {
+          const sandR = mesh(GEO.unitBox, M.sand, 3.2, -0.1, -CL / 2); sandR.scale.set(2.9, 0.2, CL); g.add(sandR);
+          const water = mesh(GEO.groundStrip, M.water, 4.6 + 350, -0.18, -CL / 2); water.rotation.x = -Math.PI / 2; g.add(water);
+          const foam = mesh(GEO.unitBox, M.foam, 4.7, -0.14, -CL / 2); foam.scale.set(0.25, 0.02, CL); g.add(foam);
+          g.userData.foam = foam;
+          for (let i = 0; i < 10; i++) {
+            const sp = glowSprite('#dfe9ff', 0.6 + rr() * 0.8, 0.6);
+            sp.position.set(12 + rr() * 90, -0.1, -rr() * CL); g.add(sp);
+            g.userData.blink.push({ s: sp, ph: rr() * 20, glint: true });
+          }
+          if (rr() < 0.4) { const isl = mesh(GEO.hill, M.palmDark, 60 + rr() * 60, -2, -rr() * CL); isl.scale.set(10 + rr() * 10, 4 + rr() * 3, 8); g.add(isl); }
+        } else {
+          const sandL = mesh(GEO.groundStrip, M.sand, -352, -0.06, -CL / 2); sandL.rotation.x = -Math.PI / 2; g.add(sandL);
+          for (let i = 0; i < 3; i++) {
+            const sx = 8 + rr() * 8, sy = 2.5 + rr() * 2;
+            const d = mesh(GEO.hill, M.sand, -(HALF + 6 + sx * 1.1 + rr() * 25), -1.2, -rr() * CL); d.scale.set(sx, sy, 6 + rr() * 6); g.add(d);
+          }
+          // пальмы наклонены от дорожки и стоят так, чтобы листья не нависали над ней
+          for (let i = 0; i < 6; i++) { const p = makePalm(M.palmTrunk, M.palmDark, 0.8 + rr() * 0.7, rr() * 0.5); p.position.set(-(4.8 + rr() * 22), 0, -rr() * CL); g.add(p); }
+        }
       }
     }
     if (key === 'garden') { const gr = mesh(GEO.groundStrip, M.ground, 0, -0.05, -CL / 2); gr.rotation.x = -Math.PI / 2; g.add(gr); }
@@ -918,7 +1161,9 @@ html,body{height:100dvh}
     syncMap(chunks, Math.floor((G.dist - 60) / CL), Math.floor((G.dist + WORLD_AHEAD) / CL), buildChunk, (g, c) => {
       g.position.z = zOf(c * CL);
       for (const h of g.userData.spin) h.rotation.z -= dt * (0.3 + G.wind * 3.2);
+      if (g.userData.foam) g.userData.foam.position.x = 4.7 + Math.sin(T * 0.9) * 0.25;
       for (const b of g.userData.blink) {
+        if (b.glint) { b.s.material.opacity = Math.max(0, Math.sin(T * 4 + b.ph)) * 0.7; continue; }
         if (b.fly) {
           b.s.position.set(b.fly.x + Math.sin(T * 0.6 + b.ph) * 0.8, b.fly.y + Math.sin(T * 1.1 + b.ph) * 0.4, b.fly.z);
           b.s.material.opacity = 0.3 + 0.6 * Math.max(0, Math.sin(T * 2.4 + b.ph));
@@ -1150,13 +1395,75 @@ html,body{height:100dvh}
       g.add(mesh(GEO.colShaft, M.column, 0, 0.91, 0));
       g.add(mesh(GEO.colBase, M.column, 0, 1.74, 0));
       for (const y of [0.4, 1.45]) { const r = mesh(GEO.colRing, M.edge[3], 0, y, 0); r.rotation.x = Math.PI / 2; g.add(r); }
-    } else {
+    } else if (key === 'farm') {
       const p = mesh(GEO.pumpkin, M.pumpkin, 0, 0.36, 0); p.rotation.y = h * 3; p.scale.setScalar(1.05); g.add(p);
       const st = mesh(GEO.cyl, M.stem, 0, 0.78, 0); st.scale.set(0.05, 0.16, 0.05); st.rotation.z = 0.3; g.add(st);
       for (const s of [-1, 1]) { const e = mesh(GEO.pumpEye, M.carve, s * 0.15, 0.46, 0.47); g.add(e); }
       const mo = mesh(GEO.pumpMouth, M.carve, 0, 0.26, 0.465); g.add(mo);
       const gl = glowSprite('#ffa040', 1.4, 0.35); gl.position.set(0, 0.4, 0.3); g.add(gl);
+    } else if (key === 'subway') {
+      const p = makePerson(h); g.add(p); g.userData.person = p;
+    } else if (key === 'cave') {
+      // завал: груда светлых камней и торчащая балка крепи
+      const spots = [[0, 0.32, 0, 0.46], [-0.28, 0.2, 0.08, 0.3], [0.3, 0.22, -0.05, 0.32], [0.08, 0.72, 0.02, 0.28], [-0.12, 0.55, 0.12, 0.22]];
+      spots.forEach((s, i) => {
+        const r = mesh(GEO.rocks[(i + Math.floor(h * 3)) % 3], M.rubble, s[0], s[1], s[2]);
+        r.scale.set(s[3], s[3] * 0.8, s[3]); r.rotation.set(h * 5 + i, i * 1.7, h * 2); g.add(r);
+      });
+      const beam = mesh(GEO.unitBox, M.wood, 0.1, 0.75, -0.05); beam.scale.set(0.09, 1.25, 0.09); beam.rotation.z = (h < 0.5 ? -1 : 1) * 0.75; g.add(beam);
+    } else if (key === 'forest') {
+      // дерево прямо на тропе: светлый ствол хорошо виден, крона выше камеры
+      const tk = mesh(GEO.cyl, M.bark, 0, 1.4, 0); tk.scale.set(0.2, 2.8, 0.2); g.add(tk);
+      const root = mesh(GEO.cone, M.bark, 0, 0.18, 0); root.scale.set(0.38, 0.36, 0.38); g.add(root);
+      for (let j = 0; j < 3; j++) { const c = mesh(GEO.tree, M.canopy, 0, 3.4 + j * 0.62, 0); c.scale.set(1.0 - j * 0.24, 1.2, 1.0 - j * 0.24); g.add(c); }
+    } else if (key === 'clouds') {
+      // вершина горы, пробивающая облако: снежная шапка и клубы облака у подножия
+      const m = mesh(GEO.cone, M.peak, 0, 0.85, 0); m.scale.set(0.58, 1.7, 0.58); m.rotation.y = h * 3; g.add(m);
+      const cap = mesh(GEO.cone, M.snow, 0, 1.52, 0); cap.scale.set(0.24, 0.42, 0.24); cap.rotation.y = m.rotation.y; g.add(cap);
+      for (let i = 0; i < 4; i++) { const a = i * 1.7 + h * 3; const p = mesh(GEO.cloudPuff, M.cloud, Math.cos(a) * 0.45, 0.12, Math.sin(a) * 0.3 + 0.1); p.scale.set(0.38, 0.22, 0.3); g.add(p); }
+    } else if (key === 'beach') {
+      const p = makePalm(M.palmTrunk, M.palmLeaf, 0.85, h); g.add(p);
     }
+  }
+
+  // стилизованный пассажир метро: аккуратный силуэт без лица, пастельная куртка, лёгкое покачивание
+  function makePerson(h) {
+    const p = new THREE.Group();
+    const coat = M.coats[Math.floor(h * M.coats.length) % M.coats.length];
+    for (const s of [-1, 1]) { const l = mesh(GEO.limb, M.pants, s * 0.085, 0.38, 0); l.scale.set(1, 0.76, 1); p.add(l); }
+    const t = mesh(GEO.torso, coat, 0, 0.72, 0); t.scale.set(1.05, 1.02, 0.78); p.add(t);
+    for (const s of [-1, 1]) { const a = mesh(GEO.limb, coat, s * 0.235, 1.07, 0); a.scale.set(0.85, 0.55, 0.85); a.rotation.z = s * 0.08; p.add(a); }
+    const head = mesh(GEO.headS, M.skin, 0, 1.52, 0); p.add(head);
+    const hair = mesh(GEO.headS, M.pants, 0, 1.56, -0.025); hair.scale.set(1.04, 0.86, 1.02); p.add(hair);
+    if (h < 0.5) {
+      const ph = mesh(GEO.unitBox, M.phone, 0, 1.12, 0.2); ph.scale.set(0.09, 0.15, 0.01); ph.rotation.x = -0.5; p.add(ph);
+      const gl = glowSprite('#bfe6ff', 0.7, 0.35); gl.position.set(0, 1.2, 0.22); p.add(gl);
+    } else {
+      const bag = mesh(GEO.unitBox, M.carDark, 0.3, 0.75, 0.02); bag.scale.set(0.12, 0.32, 0.3); p.add(bag);
+    }
+    p.rotation.y = [0, Math.PI, Math.PI / 2, -Math.PI / 2, 0.4, -0.4][Math.floor(h * 6) % 6];
+    return p;
+  }
+
+  // пальма: изогнутый ствол из сегментов, поникшие листья, кокосы
+  function makePalm(trunkMat, leafMat, sc, h) {
+    const g = new THREE.Group();
+    const lean = (h - 0.5) * 0.6, n = 6;
+    let top = new THREE.Vector3();
+    for (let i = 0; i < n; i++) {
+      const u = (i + 0.5) / n;
+      const seg = mesh(GEO.cyl, trunkMat, lean * u * u, i * 0.36 + 0.18, 0);
+      seg.scale.set(0.11 - i * 0.006, 0.38, 0.11 - i * 0.006); seg.rotation.z = -lean * u * 0.9; g.add(seg);
+      top.set(lean, n * 0.36, 0);
+    }
+    const crown = new THREE.Group(); crown.position.copy(top); g.add(crown);
+    for (let i = 0; i < 7; i++) {
+      const piv = new THREE.Group(); piv.rotation.y = (i / 7) * Math.PI * 2 + h * 3;
+      const lf = mesh(GEO.leaf, leafMat); lf.rotation.x = -1.15 + (i % 2) * 0.2; piv.add(lf); crown.add(piv);
+    }
+    for (let i = 0; i < 3; i++) { const c = mesh(GEO.lanternHead, M.coconut, Math.cos(i * 2.1) * 0.09, -0.08, Math.sin(i * 2.1) * 0.09); c.scale.setScalar(1.3); crown.add(c); }
+    g.scale.setScalar(sc);
+    return g;
   }
   function makeObjMesh(o) {
     const li = locIdx(o.w), key = LOCS[li].key;
@@ -1186,19 +1493,23 @@ html,body{height:100dvh}
   function removeObj(o) { if (o.mesh) { scene.remove(o.mesh); o.mesh = null; } }
 
   // ---------- состояние ----------
-  let best = 0;
-  try { best = parseInt(localStorage.getItem('casper-run-best'), 10) || 0; } catch (e) {}
+  let best = 0, unlocked = 1, selLevel = 0;
+  try {
+    best = parseInt(localStorage.getItem('casper-run-best'), 10) || 0;
+    unlocked = Math.max(1, Math.min(10, parseInt(localStorage.getItem('casper-run-unlocked'), 10) || 1));
+    selLevel = Math.max(0, Math.min(unlocked - 1, parseInt(localStorage.getItem('casper-run-sel'), 10) || 0));
+  } catch (e) {}
   ui.best.textContent = best;
 
   const G = { state: 'menu', t: 0, dist: 0, speed: 7, coins: 0, bonus: 0, energy: 1, objs: [], spawnAt: 0, wallRun: 0, shake: 0, deathT: 0, cause: '', armorT: 0, grace: 0, lastArmor: 0, seg: 0, knock: 0, knockTo: 0, dt: 0.016, wind: 0.2, windTarget: 0.2, windNext: 6, gustT: 0 };
   const pl = { lane: 0, x: 0, vx: 0, ghost: false, phase: 0, face: 1, lean: 0, leanV: 0, squash: 0, camX: 0 };
   let T = 0;
 
-  function reset() {
+  function reset(startLevel = 0) {
     for (const o of G.objs) removeObj(o);
-    G.t = 0; G.dist = 0; G.coins = 0; G.bonus = 0; G.energy = 1;
-    G.objs = []; G.spawnAt = 24; G.wallRun = 0; G.shake = 0;
-    G.armorT = 0; G.grace = 0; G.lastArmor = 0; G.seg = 0; G.knock = 0; G.knockTo = 0;
+    G.t = 0; G.dist = startLevel * LOC_LEN; G.startDist = G.dist; G.coins = 0; G.bonus = 0; G.energy = 1;
+    G.objs = []; G.spawnAt = G.dist + 24; G.wallRun = 0; G.shake = 0;
+    G.armorT = 0; G.grace = 0; G.lastArmor = 0; G.seg = startLevel; G.knock = 0; G.knockTo = 0; G.newUnlocks = [];
     G.wind = 0.15; G.windTarget = 0.15; G.windNext = 7; G.gustT = 0;
     G.speed = speedFor(G.wind, 0);
     pl.lane = 0; pl.x = 0; pl.vx = 0; pl.ghost = false; pl.phase = 0; pl.lean = 0; pl.leanV = 0;
@@ -1332,7 +1643,7 @@ html,body{height:100dvh}
     if (G.state !== 'play' || G.armorT > 0) return;
     if (!pl.ghost) {
       if (G.energy < 0.12) {
-        ui.bar.classList.remove('nope'); void ui.bar.offsetWidth; ui.bar.classList.add('nope');
+        ui.ring.classList.remove('nope'); void ui.ring.offsetWidth; ui.ring.classList.add('nope');
         sfx(160, 120, 0.12, 'square', 0.04);
         return;
       }
@@ -1400,18 +1711,56 @@ html,body{height:100dvh}
   });
   $('cr-play').addEventListener('click', start);
   $('cr-again').addEventListener('click', start);
+  $('cr-to-levels').addEventListener('click', toMenu);
   $('cr-resume').addEventListener('click', resume);
   document.addEventListener('visibilitychange', () => { if (document.hidden) pauseGame(); });
 
+  // ---------- выбор уровня: 10 карточек, открываются по очереди ----------
+  const LOCK_SVG = '<svg viewBox="0 0 14 16" aria-hidden="true"><rect x="1.5" y="7" width="11" height="8" rx="2" fill="currentColor"/><path d="M4 7V5a3 3 0 0 1 6 0v2" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>';
+  function renderLevels() {
+    ui.levels.innerHTML = '';
+    LOCS.forEach((l, i) => {
+      const b = document.createElement('button');
+      b.type = 'button'; b.className = 'cr-lvl' + (i === selLevel ? ' sel' : '');
+      b.disabled = i >= unlocked;
+      b.setAttribute('aria-label', i < unlocked ? `Уровень ${i + 1}: ${l.name}` : `Уровень ${i + 1} закрыт`);
+      b.innerHTML = i < unlocked ? `<b>${i + 1}</b><small>${l.name}</small>` : `${LOCK_SVG}<small>${i + 1}</small>`;
+      b.addEventListener('click', () => selectLevel(i));
+      ui.levels.appendChild(b);
+    });
+    ui.lvlCount.textContent = `${unlocked} из ${LOCS.length}`;
+    ui.play.textContent = `Играть · ${LOCS[selLevel].name}`;
+  }
+  function selectLevel(i) {
+    if (i >= unlocked) return;
+    selLevel = i;
+    try { localStorage.setItem('casper-run-sel', String(i)); } catch (e) {}
+    renderLevels();
+    if (G.state === 'menu') previewLevel(i);
+  }
+  // в меню за карточкой виден мир выбранного уровня
+  function previewLevel(i) {
+    for (const o of G.objs) removeObj(o);
+    G.objs = []; G.dist = i * LOC_LEN + 10; G.startDist = G.dist; G.spawnAt = G.dist + 24;
+    const L = LOCS[i];
+    atmo.top.copy(L.cTop); atmo.fog.copy(L.cFog); atmo.low.copy(L.cLow); atmo.mount.copy(L.cMount);
+  }
+  function toMenu() {
+    G.state = 'menu';
+    ui.over.hidden = true; ui.menu.hidden = false;
+    renderLevels();
+    previewLevel(selLevel);
+  }
+
   function start() {
     initAudio();
-    reset();
+    reset(selLevel);
     ptrs.clear();
     G.state = 'play';
     ui.menu.hidden = true; ui.over.hidden = true; ui.pause.hidden = true;
-    ui.hud.hidden = false; ui.wind.hidden = false; ui.chip.hidden = true;
-    lastMode = null; lastLevel = null;
-    toast(levelLabel(0), LOCS[0].name);
+    ui.hud.hidden = false; ui.wind.hidden = false; ui.ring.hidden = false; ui.chip.hidden = true;
+    lastMode = null; lastLevel = null; lastPct = -1;
+    toast(levelLabel(selLevel), LOCS[selLevel].name);
     root.focus({ preventScroll: true });
   }
   function pauseGame() {
@@ -1438,7 +1787,7 @@ html,body{height:100dvh}
     sfx(1100, 700, 0.12, 'triangle', 0.04, 0.5);
     try { navigator.vibrate && navigator.vibrate(120); } catch (e) {}
   }
-  function scoreOf() { return Math.floor(G.dist * 0.4) + G.coins * 10 + G.bonus; }
+  function scoreOf() { return Math.floor((G.dist - G.startDist) * 0.4) + G.coins * 10 + G.bonus; }
   function showOver() {
     G.state = 'over';
     const s = scoreOf();
@@ -1448,7 +1797,9 @@ html,body{height:100dvh}
     ui.fScore.textContent = s; ui.fCoins.textContent = G.coins; ui.fBest.textContent = best;
     ui.best.textContent = best;
     ui.newBest.hidden = !isBest || s === 0;
-    ui.hud.hidden = true; ui.wind.hidden = true; ui.chip.hidden = true; ui.toast.hidden = true; ui.over.hidden = false;
+    ui.unlocked.hidden = !G.newUnlocks.length;
+    if (G.newUnlocks.length) ui.unlocked.textContent = 'Открыто: ' + G.newUnlocks.map(i => LOCS[i].name).join(', ');
+    ui.hud.hidden = true; ui.wind.hidden = true; ui.ring.hidden = true; ui.chip.hidden = true; ui.toast.hidden = true; ui.over.hidden = false;
   }
   function endArmor() {
     G.armorT = 0; G.grace = 0.7;
@@ -1494,7 +1845,17 @@ html,body{height:100dvh}
 
     if (G.state === 'play') {
       const seg = segOf(G.dist + PZ);
-      if (seg !== G.seg) { G.seg = seg; toast(levelLabel(seg), LOCS[seg % LOCS.length].name); }
+      if (seg !== G.seg) {
+        G.seg = seg;
+        const idx = seg % LOCS.length;
+        // долетел до уровня — он открывается навсегда
+        if (idx + 1 > unlocked) {
+          unlocked = idx + 1; G.newUnlocks.push(idx);
+          try { localStorage.setItem('casper-run-unlocked', String(unlocked)); } catch (e) {}
+          toast('Открыт новый уровень', LOCS[idx].name);
+          sfx(520, 1040, 0.25, 'triangle', 0.05); sfx(780, 1560, 0.3, 'triangle', 0.04, 0.12);
+        } else toast(levelLabel(seg), LOCS[idx].name);
+      }
 
       if (G.armorT > 0) {
         G.armorT -= dt;
@@ -1519,7 +1880,7 @@ html,body{height:100dvh}
             if (G.armorT > 0) {
               o.broken = true; G.bonus += 5;
               const key = keyOf(o.w);
-              const cols = { city: ['#e2e6ee', '#a9b1c2', '#62d6ff'], garden: ['#ddd6c2', '#a8a294', '#4e6a3a'], cemetery: ['#d3d7da', '#8d9499', '#6d7479'], castle: ['#d6cfee', '#a59ccc', '#ffb35a'], farm: ['#f07a1c', '#c45a10', '#ffcc55'] }[key];
+              const cols = { city: ['#e2e6ee', '#a9b1c2', '#62d6ff'], garden: ['#ddd6c2', '#a8a294', '#4e6a3a'], cemetery: ['#d3d7da', '#8d9499', '#6d7479'], castle: ['#d6cfee', '#a59ccc', '#ffb35a'], farm: ['#f07a1c', '#c45a10', '#ffcc55'], subway: ['#9fb4dc', '#dca6a0', '#e3c3a6'], cave: ['#cbbfae', '#9a8a78', '#4a3624'], forest: ['#cfb391', '#2f6a3a', '#8a5a2a'], clouds: ['#b7aed6', '#ffffff', '#c9d0ea'], beach: ['#dcc39a', '#3f9a52', '#5a3a20'] }[key];
               debris.emit(o.lane, 0.75, -z, 34, cols, 3.4, 9, 1.3);
               G.shake = reduceMotion ? 0 : 0.18;
               sfx(140, 40, 0.22, 'sawtooth', 0.08); sfx(90, 50, 0.18, 'square', 0.05);
@@ -1583,6 +1944,7 @@ html,body{height:100dvh}
       // объекты вдали плавно «вырастают», чтобы не выскакивать из тумана
       m.scale.setScalar(Math.max(0.001, Math.min(1, (FAR - z) / 12)));
       if (o.type === 'coin') m.userData.spin.rotation.y = T * 3 + o.w;
+      if (m.userData.person) m.userData.person.rotation.z = Math.sin(T * 1.4 + o.w) * 0.035;
       if (o.type === 'armor') {
         const p = 0.5 + 0.5 * Math.sin(T * 5);
         m.userData.ring.scale.setScalar(1 + 0.08 * p);
@@ -1720,14 +2082,51 @@ html,body{height:100dvh}
   }
 
   // ---------- HUD ----------
-  let lastScore = -1, lastCoins = -1, lastMode = null, lastLevel = null, lastWind = -1;
+  // колдунчик собирается из пяти вложенных полос: каждая поворачивается относительно предыдущей
+  const SVGNS = 'http://www.w3.org/2000/svg';
+  const sockParts = [];
+  {
+    let parent = ui.sock;
+    for (let i = 0; i < 5; i++) {
+      const g = document.createElementNS(SVGNS, 'g');
+      const h0 = 6.4 - i * 0.75, h1 = 6.4 - (i + 1) * 0.75;
+      const p = document.createElementNS(SVGNS, 'polygon');
+      p.setAttribute('points', `0,${-h0} 11.2,${-h1} 11.2,${h1} 0,${h0}`);
+      p.setAttribute('fill', i % 2 ? '#f1ebdd' : '#ff7a2e');
+      g.appendChild(p); parent.appendChild(g);
+      sockParts.push(g); parent = g;
+    }
+  }
+  function drawSock(w) {
+    // сила ветра 0..5: целые полосы надуты и стоят горизонтально, следующая — на полпути, остальные свисают вниз
+    const L = w * 5;
+    let prev = 0;
+    sockParts.forEach((g, i) => {
+      const f = Math.max(0, Math.min(1, L - i));
+      const flutter = Math.sin(T * (5 + w * 9) + i * 1.3) * (1.2 + w * 3) * f + Math.sin(T * 1.6 + i) * 2.5 * (1 - f);
+      const abs = 80 * (1 - f) + flutter - f * 3;
+      const rel = i === 0 ? abs : abs - prev;
+      g.setAttribute('transform', i === 0 ? `rotate(${rel.toFixed(1)})` : `translate(11.2 0) rotate(${rel.toFixed(1)})`);
+      prev = abs;
+    });
+  }
+  const RING_C = 2 * Math.PI * 32;
+
+  let lastScore = -1, lastCoins = -1, lastMode = null, lastLevel = null, lastPct = -1;
   function hud() {
+    drawSock(G.wind);
     if (G.state !== 'play') return;
     const s = scoreOf();
     if (s !== lastScore) { ui.score.textContent = s; lastScore = s; }
     if (G.coins !== lastCoins) { ui.coins.textContent = G.coins; lastCoins = G.coins; }
-    ui.energy.style.transform = `scaleX(${G.energy.toFixed(3)})`;
-    ui.bar.classList.toggle('low', G.energy < 0.25);
+    const pct = Math.round(G.energy * 100);
+    if (pct !== lastPct) {
+      ui.ringArc.setAttribute('stroke-dashoffset', (RING_C * (1 - G.energy)).toFixed(2));
+      ui.ringVal.textContent = pct;
+      ui.ring.classList.toggle('low', G.energy < 0.25);
+      lastPct = pct;
+    }
+    ui.ring.classList.toggle('ghost', pl.ghost);
     // плашка внизу появляется только на время доспехов — с обратным отсчётом
     const mode = G.armorT > 0 ? 'armor:' + Math.ceil(G.armorT) : 'none';
     if (mode !== lastMode) {
@@ -1741,16 +2140,6 @@ html,body{height:100dvh}
       const st = stageOf(G.dist + PZ);
       ui.dots.forEach((d, i) => d.classList.toggle('on', i <= st));
       lastLevel = lv;
-    }
-    // колдунчик: в штиль висит, на ветру встаёт горизонтально и полощется; полосы загораются по силе
-    const w = G.wind;
-    const ang = (1 - w) * 72 + Math.sin(T * (6 + w * 10)) * (2 + w * 5);
-    ui.sock.setAttribute('transform', `rotate(${ang.toFixed(1)} 4 4)`);
-    const lvl = Math.round(w * 5);
-    if (lvl !== lastWind) {
-      ui.segs.forEach((sg, i) => { sg.style.opacity = i < Math.max(1, lvl) ? '1' : '0.28'; });
-      ui.windVal.textContent = lvl;
-      lastWind = lvl;
     }
   }
 
@@ -1770,9 +2159,11 @@ html,body{height:100dvh}
     hud();
     requestAnimationFrame(frame);
   }
-  reset();
+  reset(selLevel);
   G.state = 'menu';
   G.speed = 6;
+  renderLevels();
+  previewLevel(selLevel);
   requestAnimationFrame(frame);
 })();
 </script>
