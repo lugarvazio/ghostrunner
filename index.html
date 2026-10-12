@@ -137,7 +137,6 @@ html,body{height:100dvh}
       <ul class="cr-rules">
         <li><span class="ic ic-wall"></span><span><b>Стены</b> проходи насквозь в форме призрака</span></li>
         <li><span class="ic ic-coin"></span><span><b>Монеты</b> собираются только в плотной форме</span></li>
-        <li><span class="ic ic-light"></span><span><b>Свет фонаря</b> развеивает призрака, иди плотным</span></li>
         <li><span class="ic ic-armor"><svg viewBox="0 0 28 30" aria-hidden="true"><path d="M14 1c2 0 3 2 2.5 4" stroke="#c4433a" stroke-width="3" fill="none" stroke-linecap="round"/><circle cx="14" cy="11" r="6.5" fill="#cfd4de" stroke="#23222e" stroke-width="1.2"/><rect x="9" y="10" width="10" height="2" rx="1" fill="#23222e"/><circle cx="11.5" cy="11" r="1" fill="#79f2cf"/><circle cx="16.5" cy="11" r="1" fill="#79f2cf"/><path d="M6 18h16l-3 11H9z" fill="#aeb4c2" stroke="#23222e" stroke-width="1.2"/></svg></span><span><b>Доспехи</b> вселись: ломай стены и собирай монеты</span></li>
       </ul>
       <p class="cr-controls">Свайп влево и вправо меняет полосу, тап меняет форму. На клавиатуре: стрелки и пробел.</p>
@@ -258,7 +257,7 @@ html,body{height:100dvh}
       bloom.setSize(Math.round(w * PR / 2), Math.round(h * PR / 2));
     }
     camera.aspect = w / h;
-    const hfov = 66 * Math.PI / 180;
+    const hfov = 57 * Math.PI / 180;
     const vfov = 2 * Math.atan(Math.tan(hfov / 2) / camera.aspect) * 180 / Math.PI;
     camera.fov = Math.max(52, Math.min(86, vfov));
     camera.updateProjectionMatrix();
@@ -391,8 +390,11 @@ html,body{height:100dvh}
     gate: std({ color: C('#2a2440'), roughness: 0.9 }),
     signs: T_signs.map(t => basic({ map: t })),
     gateEdge: LOCS.map(l => basic({ color: HDR(l.edge, 2.4) })),
-    blockCastle: std({ color: C('#5b5180'), roughness: 0.85 }),
-    blockCity: std({ color: C('#6b7080'), roughness: 0.8 }),
+    // препятствия светлые и чуть самосветящиеся, чтобы читаться на тёмной дорожке и в тумане
+    blockCastle: std({ color: C('#d6cfee'), roughness: 0.8, emissive: C('#4a3f7a'), emissiveIntensity: 0.55 }),
+    blockCity: std({ color: C('#e2e6ee'), roughness: 0.75, emissive: C('#2f4a66'), emissiveIntensity: 0.55 }),
+    rockLight: std({ color: C('#ddd6c2'), roughness: 0.95, flatShading: true, emissive: C('#3d4a2a'), emissiveIntensity: 0.5 }),
+    danger: LOCS.map(l => add(C(l.edge), 0.55, T_glow)),
     runeCastle: basic({ color: HDR('#ffb35a', 2.6) }),
     runeCity: basic({ color: HDR('#62d6ff', 2.6) }),
     rock: std({ color: C('#77746a'), roughness: 0.95, flatShading: true }),
@@ -925,13 +927,17 @@ html,body{height:100dvh}
     if (o.type === 'wall') {
       if (li === 2) {
         const v = Math.floor(hash(o.w * 1.3 + o.lane) * 3);
-        const r = mesh(GEO.rocks[v], M.rock, 0, 0.68, 0); r.scale.set(0.5, 0.72, 0.34); r.rotation.y = hash(o.w) * 0.6 - 0.3; g.add(r);
+        const r = mesh(GEO.rocks[v], M.rockLight, 0, 0.68, 0); r.scale.set(0.5, 0.72, 0.34); r.rotation.y = hash(o.w) * 0.6 - 0.3; g.add(r);
         const m = mesh(GEO.rocks[(v + 1) % 3], M.moss, 0.05, 1.18, 0.02); m.scale.set(0.34, 0.16, 0.26); g.add(m);
       } else {
         g.add(mesh(GEO.block, li === 0 ? M.blockCastle : M.blockCity, 0, 0.75, 0));
         g.add(mesh(GEO.rune, li === 0 ? M.runeCastle : M.runeCity, 0, li === 0 ? 1.05 : 0.8, 0.228));
+        // светящаяся кромка по верху
+        const rim = mesh(GEO.unitBox, M.edge[li], 0, 1.51, 0); rim.scale.set(0.94, 0.035, 0.47); g.add(rim);
       }
       shadowUnder(g, 1.3);
+      // подсвеченное пятно на дороге перед препятствием — видно издалека
+      const warn = mesh(GEO.pool, M.danger[li], 0, 0.016, 0.55); warn.rotation.x = -Math.PI / 2; warn.scale.set(0.75, 0.55, 1); g.add(warn);
       g.userData.dz = -0.225; g.position.set(o.lane, 0, 0);
     } else if (o.type === 'light') {
       // фонарь на столбе у края дорожки, кронштейн выносит лампу ровно над полосой
@@ -987,7 +993,7 @@ html,body{height:100dvh}
 
   function reset() {
     for (const o of G.objs) removeObj(o);
-    G.t = 0; G.dist = 0; G.speed = 13; G.coins = 0; G.bonus = 0; G.energy = 1;
+    G.t = 0; G.dist = 0; G.speed = 11; G.coins = 0; G.bonus = 0; G.energy = 1;
     G.objs = []; G.spawnAt = 24; G.wallRun = 0; G.shake = 0;
     G.armorT = 0; G.grace = 0; G.lastArmor = 0; G.seg = 0; G.knock = 0; G.knockTo = 0;
     pl.lane = 0; pl.x = 0; pl.vx = 0; pl.ghost = false; pl.phase = 0; pl.lean = 0; pl.leanV = 0;
@@ -995,11 +1001,12 @@ html,body{height:100dvh}
   }
 
   // ---------- генерация рядов ----------
+  // ловушки-фонари убраны: остались только стены разной плотности
   const POOLS = [
     ['w1', 'w1', 'w2'],
-    ['w1', 'w2', 'w3', 'l1', 'l1'],
-    ['w2', 'w3', 'l1', 'l2', 'l3', 'wl', 'wl'],
-    ['w3', 'l2', 'l3', 'wl', 'wlw', 'llw', 'wlw']
+    ['w1', 'w2', 'w2', 'w3'],
+    ['w1', 'w2', 'w3', 'w3'],
+    ['w2', 'w3', 'w3']
   ];
   const SPEC = {
     w1: ['wall', null, null], w2: ['wall', 'wall', null], w3: ['wall', 'wall', 'wall'],
@@ -1011,7 +1018,7 @@ html,body{height:100dvh}
   function addObj(o) { o.mesh = makeObjMesh(o); G.objs.push(o); }
 
   function makeRow(w, gap) {
-    const lvl = G.state === 'play' ? Math.min(3, Math.floor(G.t / 14)) : 1;
+    const lvl = G.state === 'play' ? Math.min(3, Math.floor(G.t / 30)) : 1;
     let pool = [];
     for (let i = 0; i <= lvl; i++) pool = pool.concat(POOLS[i]);
     let pick = pool[rnd(pool.length)];
@@ -1043,7 +1050,7 @@ html,body{height:100dvh}
 
   function spawn() {
     while (G.spawnAt < G.dist + FAR) {
-      const timeGap = Math.max(0.62, 1.2 - G.t * 0.009);
+      const timeGap = Math.max(0.72, 1.3 - G.t * 0.004);
       const gap = Math.max(6, G.speed * timeGap);
       makeRow(G.spawnAt, gap);
       G.spawnAt += gap;
@@ -1218,7 +1225,8 @@ html,body{height:100dvh}
     G.dt = dt;
     if (G.state === 'play') {
       G.t += dt;
-      G.speed = Math.min(36, 13 + G.t * 0.33);
+      // небольшой, но постоянный рост: 11 → 30 примерно за 2,5 минуты
+      G.speed = Math.min(30, 11 + G.t * 0.12);
     } else if (G.state === 'menu') {
       G.speed = 6;
       pl.ghost = Math.floor(T / 2.2) % 2 === 1;
@@ -1306,7 +1314,7 @@ html,body{height:100dvh}
   }
 
   // ---------- синхронизация сцены ----------
-  const camRun = { y: 2.9, z: 3.1, ly: 0.35, lz: -12 };
+  const camRun = { y: 2.45, z: 2.5, ly: 0.45, lz: -12 };
   const camFace = { y: 1.3, z: 0.75, ly: 1.3, lz: -6 };
   const lookAt = new THREE.Vector3();
   const tmpQ = new THREE.Quaternion(), zAxis = new THREE.Vector3(0, 0, 1);
