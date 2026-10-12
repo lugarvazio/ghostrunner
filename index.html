@@ -16,6 +16,9 @@ body{background:#0b0916;margin:0;overflow:hidden}
 html,body{height:100dvh}
 /* скрытые экраны должны прятаться и без обёртки артефакта (на GitHub Pages её нет) */
 [hidden]{display:none!important}
+/* встроенные браузеры (Telegram и др.): никаких системных жестов, прокрутки и «резинки» поверх игры */
+html,body{overscroll-behavior:none;touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+body{position:fixed;inset:0;overflow:hidden}
 
 /* обложка-загрузка: показывается сразу, пока качаются библиотеки и прогреваются миры */
 #gr-cover{position:fixed;inset:0;z-index:50;background:#0b0916;transition:opacity .7s ease,visibility .7s;overflow:hidden}
@@ -1983,6 +1986,31 @@ html,body{height:100dvh}
     } else {
       pl.ghost = false; sfx(760, 260, 0.15);
     }
+  }
+
+  // встроенный браузер Telegram закрывается горизонтальным свайпом, если страница не «забрала» касание себе.
+  // Забираем: движение пальца гасим всегда, а начало касания — во время забега (кроме кнопок, чтобы работала пауза).
+  const ownTouch = e => { if (e.cancelable) e.preventDefault(); };
+  document.addEventListener('touchmove', ownTouch, { passive: false });
+  document.addEventListener('touchstart', e => {
+    if (e.touches.length > 1 || ((G.state === 'play' || G.state === 'dying') && !e.target.closest('button'))) ownTouch(e);
+  }, { passive: false });
+  document.addEventListener('gesturestart', ownTouch, { passive: false });
+  document.addEventListener('dblclick', ownTouch, { passive: false });
+
+  // если игра открыта как мини-приложение Telegram — разворачиваем на весь экран и выключаем закрытие свайпом
+  if (/tgWebApp/.test(location.hash + location.search)) {
+    const tg = document.createElement('script');
+    tg.src = 'https://telegram.org/js/telegram-web-app.js';
+    tg.onload = () => {
+      const W = window.Telegram && window.Telegram.WebApp; if (!W) return;
+      try { W.ready(); W.expand(); } catch (e) {}
+      try { W.disableVerticalSwipes && W.disableVerticalSwipes(); } catch (e) {}
+      try { W.setHeaderColor && W.setHeaderColor('#0b0916'); W.setBackgroundColor && W.setBackgroundColor('#0b0916'); } catch (e) {}
+      try { W.enableClosingConfirmation && W.enableClosingConfirmation(); } catch (e) {}
+      try { W.requestFullscreen && W.isVersionAtLeast && W.isVersionAtLeast('8.0') && W.requestFullscreen(); } catch (e) {}
+    };
+    document.head.appendChild(tg);
   }
 
   // каждый палец отслеживается отдельно: один может свайпать, другой — тапать
