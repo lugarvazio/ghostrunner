@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="ru">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
@@ -93,26 +93,24 @@ html,body{height:100dvh}
 #cr .cr-front{width:100%;max-width:360px;display:flex;flex-direction:column;align-items:center;animation:cr-in .45s cubic-bezier(.2,1.4,.4,1) both}
 @keyframes cr-in{from{opacity:0;transform:translateY(-14px) scale(.96)}to{opacity:1;transform:none}}
 
-/* логотип: Ghost — матовая полупрозрачная неоновая трубка, Runner — плотный объёмный */
-#cr .cr-logo{margin:0;display:flex;flex-direction:column;align-items:center;line-height:.86}
-#cr .cr-neon{font:400 clamp(64px,19vw,92px)/1 var(--f-neon);letter-spacing:.02em;color:rgba(190,255,236,.38);-webkit-text-stroke:1.4px rgba(186,255,234,.85);
-  text-shadow:0 0 4px rgba(121,242,207,.95),0 0 14px rgba(121,242,207,.7),0 0 34px rgba(121,242,207,.45),0 0 70px rgba(121,242,207,.25);animation:cr-flicker 6s infinite;filter:blur(.2px)}
+/* заголовок экрана уровней — матовый неон, как вывеска */
+#cr .cr-title{margin:0;font:400 clamp(56px,17vw,80px)/1 var(--f-neon);letter-spacing:.03em;color:rgba(190,255,236,.38);-webkit-text-stroke:1.4px rgba(186,255,234,.85);
+  text-shadow:0 0 4px rgba(121,242,207,.95),0 0 14px rgba(121,242,207,.7),0 0 34px rgba(121,242,207,.45),0 0 70px rgba(121,242,207,.25);animation:cr-flicker 6s infinite}
 @keyframes cr-flicker{0%,18%,22%,25%,53%,57%,100%{opacity:1}20%,24%,55%{opacity:.55}}
-#cr .cr-run{margin-top:-2px;font:400 clamp(38px,11.5vw,54px)/1 var(--f-display);letter-spacing:.06em;text-transform:uppercase;color:#f4efe2;
-  text-shadow:0 2px 0 #cfc6e6,0 4px 0 #a99fc9,0 6px 0 #6f6596,0 9px 14px rgba(0,0,0,.6)}
 
 /* уровни */
-#cr .cr-levels{margin-top:26px;width:100%;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
-#cr .cr-lvl{position:relative;min-width:0;aspect-ratio:1/1.12;border-radius:14px;border:1.5px solid rgba(241,235,221,.16);background:linear-gradient(180deg,rgba(255,255,255,.09),rgba(255,255,255,.02));color:var(--bone);padding:6px 3px 5px;display:grid;grid-template-rows:1fr auto;place-items:center;cursor:pointer;font:inherit;box-shadow:0 4px 0 rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.12);transition:transform .12s}
+#cr .cr-levels{margin-top:22px;width:100%;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
+#cr .cr-lvl{position:relative;min-width:0;aspect-ratio:5/6;border-radius:14px;border:1.5px solid rgba(241,235,221,.18);padding:0;overflow:hidden;cursor:pointer;background:#0d0b1a;box-shadow:0 4px 0 rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.12);transition:transform .12s}
 #cr .cr-lvl:active{transform:translateY(2px)}
-#cr .cr-lvl b{font:400 22px/1 var(--f-display);font-variant-numeric:tabular-nums}
-#cr .cr-lvl small{font:700 8px/1.1 var(--f-body);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-#cr .cr-lvl.sel{border-color:var(--ecto);background:linear-gradient(180deg,rgba(121,242,207,.22),rgba(121,242,207,.05));box-shadow:0 4px 0 #1e6b58,0 0 18px rgba(121,242,207,.45),inset 0 1px 0 rgba(255,255,255,.25);animation:cr-sel 1.8s ease-in-out infinite}
-#cr .cr-lvl.sel b{color:#fff;text-shadow:0 0 10px var(--ecto)}
-#cr .cr-lvl.sel small{color:var(--ecto)}
-@keyframes cr-sel{50%{box-shadow:0 4px 0 #1e6b58,0 0 28px rgba(121,242,207,.7),inset 0 1px 0 rgba(255,255,255,.25)}}
-#cr .cr-lvl:disabled{cursor:not-allowed;background:rgba(0,0,0,.35);border-color:rgba(241,235,221,.08);color:rgba(241,235,221,.35);box-shadow:inset 0 2px 6px rgba(0,0,0,.5)}
-#cr .cr-lvl svg{width:15px;height:17px}
+#cr .cr-lvl svg.thumb{position:absolute;inset:0;width:100%;height:100%;display:block}
+#cr .cr-lvl .num{position:absolute;left:5px;top:4px;font:400 12px/1 var(--f-display);color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.8)}
+#cr .cr-lvl.sel{border-color:var(--ecto);box-shadow:0 4px 0 #1e6b58,0 0 18px rgba(121,242,207,.5),inset 0 0 0 1px var(--ecto);animation:cr-sel 1.8s ease-in-out infinite}
+#cr .cr-lvl.sel .num{color:var(--ecto)}
+@keyframes cr-sel{50%{box-shadow:0 4px 0 #1e6b58,0 0 30px rgba(121,242,207,.75),inset 0 0 0 1px var(--ecto)}}
+#cr .cr-lvl:disabled{cursor:not-allowed;border-color:rgba(241,235,221,.08)}
+#cr .cr-lvl:disabled svg.thumb{filter:grayscale(1) brightness(.35) blur(1.2px)}
+#cr .cr-lvl .lock{position:absolute;inset:0;display:grid;place-items:center;color:rgba(241,235,221,.75)}
+#cr .cr-lvl .lock svg{width:16px;height:18px}
 #cr .cr-lvl-count{margin:10px 0 0;font:700 11px/1 var(--f-body);letter-spacing:.2em;color:var(--muted);font-variant-numeric:tabular-nums}
 
 /* кнопки: объёмные «игровые» */
@@ -151,17 +149,17 @@ html,body{height:100dvh}
 <body>
 
 
-<div id="cr" tabindex="0" aria-label="Игра Ghost Runner">
+<div id="cr" tabindex="0" aria-label="Ghost Runner game">
   <canvas></canvas>
 
   <div class="cr-hud" hidden>
     <div>
       <div class="cr-score" id="cr-score">0</div>
       <div class="cr-coins"><span class="cr-coin-ic"></span><span id="cr-coins">0</span></div>
-      <div class="cr-level"><span id="cr-level-name">Город</span><span class="cr-dots" id="cr-dots"><i></i><i></i><i></i><i></i><i></i></span></div>
+      <div class="cr-level"><span id="cr-level-name">City</span><span class="cr-dots" id="cr-dots"><i></i><i></i><i></i><i></i><i></i></span></div>
     </div>
     <div class="cr-right">
-      <button class="cr-icon-btn" id="cr-mute" type="button" aria-label="Звук">
+      <button class="cr-icon-btn" id="cr-mute" type="button" aria-label="Sound">
         <svg class="on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h4l5-4v14l-5-4H4z"/><path d="M16.5 8.5a5 5 0 0 1 0 7"/><path d="M19 6a8.5 8.5 0 0 1 0 12"/></svg>
         <svg class="off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h4l5-4v14l-5-4H4z"/><path d="M17 9l5 6M22 9l-5 6"/></svg>
       </button>
@@ -170,7 +168,7 @@ html,body{height:100dvh}
 
   <!-- колдунчик: крупный, в левом нижнем углу -->
   <!-- колдунчик: надутые ветром полосы стоят горизонтально, остальные свисают (полосы собираются в JS) -->
-  <div class="cr-wind" id="cr-wind" aria-label="Сила ветра" hidden>
+  <div class="cr-wind" id="cr-wind" aria-label="Wind strength" hidden>
     <svg viewBox="-4 -8 70 62" aria-hidden="true">
       <line x1="2" y1="2" x2="2" y2="30" stroke="#c9c2e0" stroke-width="2.4" stroke-linecap="round"/>
       <circle cx="2" cy="2.5" r="2.4" fill="#f1ebdd"/>
@@ -187,39 +185,39 @@ html,body{height:100dvh}
     <b id="cr-ring-val">100</b>
   </div>
 
-  <div class="cr-chip is-armor" id="cr-chip" hidden>Доспехи</div>
-  <div class="cr-toast" id="cr-toast" hidden><span id="cr-toast-sub">Уровень 1</span><b id="cr-toast-name">Город</b></div>
+  <div class="cr-chip is-armor" id="cr-chip" hidden>Armor</div>
+  <div class="cr-toast" id="cr-toast" hidden><span id="cr-toast-sub">Level 1</span><b id="cr-toast-name">City</b></div>
 
   <div class="cr-screen" id="cr-menu">
     <div class="cr-front">
-      <h1 class="cr-logo" aria-label="Ghost Runner"><span class="cr-neon">Ghost</span><span class="cr-run">Runner</span></h1>
+      <h1 class="cr-title">Levels</h1>
       <div class="cr-levels" id="cr-levels"></div>
       <p class="cr-lvl-count" id="cr-lvl-count">1 / 10</p>
-      <button class="cr-btn cr-btn-play" id="cr-play" type="button"><span class="cr-btn-main">Играть</span><span class="cr-btn-sub" id="cr-play-sub">Город</span></button>
+      <button class="cr-btn cr-btn-play" id="cr-play" type="button"><span class="cr-btn-main">Play</span><span class="cr-btn-sub" id="cr-play-sub">City</span></button>
       <p class="cr-best"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 2h10v3a5 5 0 0 1-10 0z" fill="#ffb84d"/><path d="M5 3H2v1.5A3.5 3.5 0 0 0 5.5 8M15 3h3v1.5A3.5 3.5 0 0 1 14.5 8" fill="none" stroke="#ffb84d" stroke-width="1.6"/><rect x="8.6" y="9" width="2.8" height="4" fill="#ffb84d"/><rect x="6" y="13" width="8" height="3" rx="1" fill="#ffb84d"/></svg><span id="cr-best">0</span></p>
-      <p class="cr-error" id="cr-error" hidden>Браузер не поддерживает WebGL, поэтому 3D-графика не запустится.</p>
+      <p class="cr-error" id="cr-error" hidden>WebGL isn’t available in this browser, so the 3D graphics can’t start.</p>
     </div>
   </div>
 
   <div class="cr-screen" id="cr-over" hidden>
     <div class="cr-front">
-      <h2 class="cr-ko">Ой-ой!</h2>
-      <div class="cr-big"><b id="cr-f-score">0</b><span>очков</span></div>
-      <p class="cr-badge" id="cr-newbest" hidden>Новый рекорд</p>
+      <h2 class="cr-ko">Oops!</h2>
+      <div class="cr-big"><b id="cr-f-score">0</b><span>points</span></div>
+      <p class="cr-badge" id="cr-newbest" hidden>New record</p>
       <div class="cr-pills">
         <span class="cr-pill coin"><i class="cr-coin-ic"></i><b id="cr-f-coins">0</b></span>
         <span class="cr-pill"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 2h10v3a5 5 0 0 1-10 0z" fill="#ffb84d"/><path d="M5 3H2v1.5A3.5 3.5 0 0 0 5.5 8M15 3h3v1.5A3.5 3.5 0 0 1 14.5 8" fill="none" stroke="#ffb84d" stroke-width="1.6"/><rect x="8.6" y="9" width="2.8" height="4" fill="#ffb84d"/><rect x="6" y="13" width="8" height="3" rx="1" fill="#ffb84d"/></svg><b id="cr-f-best">0</b></span>
       </div>
       <p class="cr-unlock" id="cr-unlocked" hidden></p>
-      <button class="cr-btn cr-btn-play" id="cr-again" type="button"><span class="cr-btn-main">Ещё раз</span></button>
-      <button class="cr-btn cr-btn-ghost" id="cr-to-levels" type="button">Уровни</button>
+      <button class="cr-btn cr-btn-play" id="cr-again" type="button"><span class="cr-btn-main">Again</span></button>
+      <button class="cr-btn cr-btn-ghost" id="cr-to-levels" type="button">Levels</button>
     </div>
   </div>
 
   <div class="cr-screen" id="cr-pause" hidden>
     <div class="cr-front">
-      <h2 class="cr-ko cr-ko-calm">Пауза</h2>
-      <button class="cr-btn cr-btn-play" id="cr-resume" type="button"><span class="cr-btn-main">Продолжить</span></button>
+      <h2 class="cr-ko cr-ko-calm">Paused</h2>
+      <button class="cr-btn cr-btn-play" id="cr-resume" type="button"><span class="cr-btn-main">Resume</span></button>
     </div>
   </div>
 </div>
@@ -337,16 +335,16 @@ html,body{height:100dvh}
 
   // ---------- пять уровней ----------
   const LOCS = [
-    { key: 'city', name: 'Город', top: '#03050c', fog: '#1c2b4c', low: '#0b1222', mount: '#0f182c', path: '#30343f', side: '#13161e', edge: '#62d6ff', death: 'Врезался в бетонный блок', bits: ['#d8dce6', '#a9b1c2'] },
-    { key: 'garden', name: 'Сад', top: '#030908', fog: '#1b3f35', low: '#0a1a16', mount: '#0d2520', path: '#5a5a4c', side: '#23241d', edge: '#c6ff7d', death: 'Врезался в камень', bits: ['#8fc46a', '#c8e07a', '#5e9a4a'] },
-    { key: 'cemetery', name: 'Кладбище', top: '#04050a', fog: '#26303a', low: '#0d1217', mount: '#121a20', path: '#3f3e3b', side: '#191918', edge: '#8affd8', death: 'Врезался в надгробие', bits: ['#b08a5a', '#8a6a44', '#c9a46a'] },
-    { key: 'castle', name: 'Замок', top: '#05040f', fog: '#2a2452', low: '#120f26', mount: '#151129', path: '#4b4470', side: '#1c1731', edge: '#ffb35a', death: 'Врезался в колонну', bits: ['#ffb35a', '#ff8a3a'] },
-    { key: 'farm', name: 'Ферма', top: '#07050a', fog: '#36281f', low: '#140e0b', mount: '#1d1612', path: '#5e4b36', side: '#2a2118', edge: '#ffa040', death: 'Врезался в тыкву', bits: ['#e8c46a', '#d6a84a', '#f2dc8a'] },
-    { key: 'subway', name: 'Метро', top: '#05060a', fog: '#1b1e26', low: '#08090c', mount: '#0d0f14', path: '#3a3d44', side: '#15171b', edge: '#ffd34a', death: 'Врезался в пассажира', bits: ['#e8e6df', '#c9c6bd'], enclosed: true },
-    { key: 'cave', name: 'Пещера', top: '#040306', fog: '#1d1824', low: '#0a080c', mount: '#120f16', path: '#4a4038', side: '#1c1814', edge: '#b48aff', death: 'Врезался в завал', bits: ['#9a8a78', '#7a6c5c'], enclosed: true },
-    { key: 'forest', name: 'Лес', top: '#020705', fog: '#13271e', low: '#07120d', mount: '#0b1b14', path: '#4a3e2e', side: '#1e1912', edge: '#9dff8a', death: 'Врезался в дерево', bits: ['#c98a3a', '#a7c45a', '#8a5a2a'] },
-    { key: 'clouds', name: 'Облака', top: '#070a1c', fog: '#36437a', low: '#1c2240', mount: '#2a3360', path: '#a9b2d6', side: '#6c76a0', edge: '#d0c0ff', death: 'Врезался в вершину горы', bits: ['#ffffff', '#dfe6ff'] },
-    { key: 'beach', name: 'Пляж', top: '#030810', fog: '#163149', low: '#08121c', mount: '#0d2236', path: '#c2ad86', side: '#5e5240', edge: '#4affe0', death: 'Врезался в пальму', bits: ['#e6d3a8', '#cdb98a'] }
+    { key: 'city', name: 'City', top: '#03050c', fog: '#1c2b4c', low: '#0b1222', mount: '#0f182c', path: '#30343f', side: '#13161e', edge: '#62d6ff', death: 'Hit a concrete block', bits: ['#d8dce6', '#a9b1c2'] },
+    { key: 'garden', name: 'Garden', top: '#030908', fog: '#1b3f35', low: '#0a1a16', mount: '#0d2520', path: '#5a5a4c', side: '#23241d', edge: '#c6ff7d', death: 'Hit a rock', bits: ['#8fc46a', '#c8e07a', '#5e9a4a'] },
+    { key: 'cemetery', name: 'Cemetery', top: '#04050a', fog: '#26303a', low: '#0d1217', mount: '#121a20', path: '#3f3e3b', side: '#191918', edge: '#8affd8', death: 'Hit a tombstone', bits: ['#b08a5a', '#8a6a44', '#c9a46a'] },
+    { key: 'castle', name: 'Castle', top: '#05040f', fog: '#2a2452', low: '#120f26', mount: '#151129', path: '#4b4470', side: '#1c1731', edge: '#ffb35a', death: 'Hit a column', bits: ['#ffb35a', '#ff8a3a'] },
+    { key: 'farm', name: 'Farm', top: '#07050a', fog: '#36281f', low: '#140e0b', mount: '#1d1612', path: '#5e4b36', side: '#2a2118', edge: '#ffa040', death: 'Hit a pumpkin', bits: ['#e8c46a', '#d6a84a', '#f2dc8a'] },
+    { key: 'subway', name: 'Subway', top: '#05060a', fog: '#1b1e26', low: '#08090c', mount: '#0d0f14', path: '#3a3d44', side: '#15171b', edge: '#ffd34a', death: 'Bumped into a passenger', bits: ['#e8e6df', '#c9c6bd'], enclosed: true },
+    { key: 'cave', name: 'Cave', top: '#040306', fog: '#1d1824', low: '#0a080c', mount: '#120f16', path: '#4a4038', side: '#1c1814', edge: '#b48aff', death: 'Hit the rubble', bits: ['#9a8a78', '#7a6c5c'], enclosed: true },
+    { key: 'forest', name: 'Forest', top: '#020705', fog: '#13271e', low: '#07120d', mount: '#0b1b14', path: '#4a3e2e', side: '#1e1912', edge: '#9dff8a', death: 'Hit a tree', bits: ['#c98a3a', '#a7c45a', '#8a5a2a'] },
+    { key: 'clouds', name: 'Clouds', top: '#070a1c', fog: '#36437a', low: '#1c2240', mount: '#2a3360', path: '#a9b2d6', side: '#6c76a0', edge: '#d0c0ff', death: 'Hit a mountain peak', bits: ['#ffffff', '#dfe6ff'] },
+    { key: 'beach', name: 'Beach', top: '#030810', fog: '#163149', low: '#08121c', mount: '#0d2236', path: '#c2ad86', side: '#5e5240', edge: '#4affe0', death: 'Hit a palm tree', bits: ['#e6d3a8', '#cdb98a'] }
   ].map(l => Object.assign(l, { cTop: C(l.top), cFog: C(l.fog), cLow: C(l.low), cMount: C(l.mount) }));
   const segOf = w => Math.floor(Math.max(0, w) / LOC_LEN);
   const locIdx = w => segOf(w) % LOCS.length;
@@ -1640,7 +1638,7 @@ html,body{height:100dvh}
     clearTimeout(toast.t);
     toast.t = setTimeout(() => { ui.toast.hidden = true; }, 2600);
   }
-  const levelLabel = seg => `Уровень ${(seg % LOCS.length) + 1}${seg >= LOCS.length ? ' · круг ' + (Math.floor(seg / LOCS.length) + 1) : ''}`;
+  const levelLabel = seg => `Level ${(seg % LOCS.length) + 1}${seg >= LOCS.length ? ' · lap ' + (Math.floor(seg / LOCS.length) + 1) : ''}`;
 
   // ---------- управление ----------
   function move(d) {
@@ -1726,14 +1724,55 @@ html,body{height:100dvh}
 
   // ---------- выбор уровня: 10 карточек, открываются по очереди ----------
   const LOCK_SVG = '<svg viewBox="0 0 14 16" aria-hidden="true"><rect x="1.5" y="7" width="11" height="8" rx="2" fill="currentColor"/><path d="M4 7V5a3 3 0 0 1 6 0v2" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>';
+  // миниатюры уровней: кусочек мира и его препятствие вместо подписи
+  function thumbSVG(l) {
+    const k = l.key, id = 'tg-' + k;
+    const sky = `<defs><linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${l.top}"/><stop offset=".56" stop-color="${l.fog}"/><stop offset="1" stop-color="${l.low}"/></linearGradient></defs><rect width="50" height="60" fill="url(#${id})"/>`;
+    const moon = '<circle cx="39" cy="10" r="4" fill="#f2ecdc" opacity=".9"/><circle cx="39" cy="10" r="8" fill="#dfe9ff" opacity=".12"/>';
+    const road = `<polygon points="5,60 45,60 27.6,33 22.4,33" fill="${l.path}"/><line x1="5" y1="60" x2="22.4" y2="33" stroke="${l.edge}" stroke-width="1"/><line x1="45" y1="60" x2="27.6" y2="33" stroke="${l.edge}" stroke-width="1"/>`;
+    const D = '#0b0916';
+    let back = '', obst = '';
+    if (k === 'city') {
+      back = moon + `<g fill="${D}"><rect x="0" y="12" width="7" height="24"/><rect x="7" y="20" width="6" height="16"/><rect x="36" y="16" width="8" height="20"/><rect x="44" y="8" width="6" height="28"/></g><g fill="#ffd08a"><rect x="2" y="15" width="1.2" height="1.4"/><rect x="4" y="21" width="1.2" height="1.4"/><rect x="38" y="20" width="1.2" height="1.4"/><rect x="46" y="12" width="1.2" height="1.4"/><rect x="46" y="22" width="1.2" height="1.4"/></g><circle cx="47" cy="7" r="1.1" fill="#ff4a4a"/>`;
+      obst = '<rect x="19" y="43" width="12" height="13" rx="1" fill="#e2e6ee"/><rect x="19" y="48" width="12" height="1.6" fill="#62d6ff"/><rect x="19" y="43" width="12" height="1" fill="#62d6ff"/>';
+    } else if (k === 'garden') {
+      back = moon + '<ellipse cx="6" cy="36" rx="16" ry="7" fill="#0d2a20"/><ellipse cx="46" cy="36" rx="14" ry="6" fill="#0d2a20"/><g fill="#0b1f18"><polygon points="4,34 8,22 12,34"/><polygon points="38,34 42,24 46,34"/></g><circle cx="10" cy="30" r=".8" fill="#d8ff8a"/><circle cx="41" cy="28" r=".8" fill="#d8ff8a"/>';
+      obst = '<path d="M18 56 L19 47 L23 42 L29 42 L32 47 L32 56 Z" fill="#ddd6c2"/><path d="M22 43 L28 42.5 L30 45 L23 45.5 Z" fill="#4e6a3a"/>';
+    } else if (k === 'cemetery') {
+      back = moon + `<g stroke="${D}" stroke-width="1.2" fill="none"><path d="M6 36 L6 18 M6 24 L2 19 M6 22 L10 16 M6 28 L10 25"/><path d="M44 36 L44 20 M44 25 L48 21 M44 23 L40 18"/></g><g fill="#565a60"><rect x="12" y="31" width="3" height="4" rx="1.5"/><rect x="35" y="31" width="3" height="4" rx="1.5"/></g>`;
+      obst = '<path d="M19 56 V46 a6 6 0 0 1 12 0 V56 Z" fill="#d3d7da"/><rect x="24.3" y="44" width="1.4" height="7" fill="#6d7479"/><rect x="22.5" y="46" width="5" height="1.3" fill="#6d7479"/>';
+    } else if (k === 'castle') {
+      back = moon + `<polygon points="0,36 8,10 16,36" fill="${D}"/><g fill="${D}"><rect x="5" y="6" width="3" height="8"/><polygon points="4.5,6 6.5,1 8.5,6"/><rect x="9" y="8" width="2.4" height="6"/><polygon points="8.6,8 10.2,4 11.8,8"/></g><rect x="6.2" y="9" width=".8" height="1.4" fill="#ffc070"/><path d="M15 33 V26 Q15 19 25 16 Q35 19 35 26 V33" fill="none" stroke="#3a3358" stroke-width="2.4"/><circle cx="16" cy="27" r="1" fill="#ffb35a"/><circle cx="34" cy="27" r="1" fill="#ffb35a"/>`;
+      obst = '<rect x="20" y="44" width="10" height="2" fill="#d6cfee"/><rect x="21.6" y="46" width="6.8" height="9" fill="#d6cfee"/><rect x="20" y="54.5" width="10" height="2" fill="#d6cfee"/><rect x="21.6" y="47.5" width="6.8" height=".8" fill="#ffb35a"/>';
+    } else if (k === 'farm') {
+      back = moon + `<rect x="2" y="26" width="10" height="9" fill="#3a1612"/><polygon points="1,26 7,20 13,26" fill="#1c1110"/><rect x="5" y="29" width="2" height="2" fill="#ffc070"/><polygon points="40,35 42,18 44,35" fill="#3a1612"/><g stroke="#4a3624" stroke-width="1.4"><line x1="36" y1="13" x2="48" y2="25"/><line x1="48" y1="13" x2="36" y2="25"/></g>`;
+      obst = '<ellipse cx="25" cy="50" rx="8" ry="6" fill="#f07a1c"/><path d="M21 50 a4 6 0 0 0 8 0" fill="none" stroke="#c45a10" stroke-width=".8"/><rect x="24.4" y="42.5" width="1.4" height="3" fill="#3f5a22"/><polygon points="21.5,48 23.5,48 22.5,46.5" fill="#ffcc55"/><polygon points="26.5,48 28.5,48 27.5,46.5" fill="#ffcc55"/><path d="M21.5 51.5 L28.5 51.5 L27 53 L23 53 Z" fill="#ffcc55"/>';
+    } else if (k === 'subway') {
+      back = '<rect width="50" height="60" fill="#1b1e26"/><polygon points="0,0 50,0 30,30 20,30" fill="#d4d7de" opacity=".25"/><g stroke="#fff3dc" stroke-width="1.4"><line x1="14" y1="0" x2="22.6" y2="30"/><line x1="36" y1="0" x2="27.4" y2="30"/></g><polygon points="0,14 8,20 8,32 0,36" fill="#0a0d14"/><polygon points="50,14 42,20 42,32 50,36" fill="#0a0d14"/><circle cx="3" cy="24" r=".9" fill="#ffd9a0"/><circle cx="47" cy="25" r=".9" fill="#ffd9a0"/><polygon points="0,36 8,32 8,36 0,42" fill="#2f4f8f"/><polygon points="50,36 42,32 42,36 50,42" fill="#2f4f8f"/>';
+      obst = '<rect x="22" y="42" width="6" height="9" rx="3" fill="#9fb4dc"/><circle cx="25" cy="39" r="2.4" fill="#e3c3a6"/><path d="M22.6 39 a2.4 2.4 0 0 1 4.8 0 Z" fill="#2c2f3a"/><rect x="22.8" y="50" width="1.6" height="6" fill="#2c2f3a"/><rect x="25.6" y="50" width="1.6" height="6" fill="#2c2f3a"/><rect x="24.2" y="45" width="1.8" height="2.6" fill="#bfe6ff"/>';
+    } else if (k === 'cave') {
+      back = '<rect width="50" height="60" fill="#1d1824"/><path d="M0 0 H50 V40 L44 30 L40 18 Q25 6 10 18 L6 30 L0 40 Z" fill="#110d16"/><g fill="#2e2830"><polygon points="18,10 20,10 19,15"/><polygon points="30,9 32,9 31,14"/></g><g fill="#b48aff"><polygon points="7,36 8.5,30 10,36"/><polygon points="9.5,36 10.5,32 11.5,36"/></g><g fill="#6fe0ff"><polygon points="39,36 40.5,31 42,36"/></g><circle cx="9" cy="34" r="4" fill="#b48aff" opacity=".2"/>';
+      obst = '<ellipse cx="25" cy="53" rx="8" ry="3.4" fill="#cbbfae"/><ellipse cx="21" cy="50" rx="3.6" ry="3" fill="#cbbfae"/><ellipse cx="28.5" cy="49.5" rx="3.4" ry="3" fill="#b8ad9c"/><ellipse cx="25" cy="46.5" rx="2.6" ry="2.2" fill="#d8ccbb"/><line x1="19" y1="44" x2="31" y2="54" stroke="#4a3624" stroke-width="1.4"/>';
+    } else if (k === 'forest') {
+      back = `<g fill="${D}"><polygon points="-2,36 4,8 10,36"/><polygon points="6,36 11,14 16,36"/><polygon points="34,36 39,12 44,36"/><polygon points="41,36 47,6 53,36"/></g><g fill="#0a1a12"><polygon points="14,33 17,22 20,33"/><polygon points="30,33 33,22 36,33"/></g><polygon points="9,0 14,0 20,36 12,36" fill="#bcd4ff" opacity=".08"/><circle cx="14" cy="30" r=".8" fill="#d8ff8a"/>`;
+      obst = '<rect x="23.6" y="40" width="2.8" height="16" fill="#cfb391"/><polygon points="18,44 25,30 32,44" fill="#2f6a3a"/><polygon points="19.5,38 25,27 30.5,38" fill="#2f6a3a"/>';
+    } else if (k === 'clouds') {
+      back = moon + '<polygon points="2,34 9,22 16,34" fill="#3e3a66"/><polygon points="7,25 9,22 11,25" fill="#ffffff"/><polygon points="36,34 43,20 50,34" fill="#3e3a66"/><polygon points="41,23 43,20 45,23" fill="#ffffff"/><g fill="#c9d0ea" opacity=".9"><ellipse cx="6" cy="38" rx="9" ry="3.6"/><ellipse cx="44" cy="39" rx="9" ry="3.4"/><ellipse cx="2" cy="50" rx="7" ry="3"/><ellipse cx="48" cy="52" rx="7" ry="3"/></g>';
+      obst = '<polygon points="18,54 25,38 32,54" fill="#b7aed6"/><polygon points="22.6,43.5 25,38 27.4,43.5 25,42.5" fill="#ffffff"/><g fill="#e4e8f8"><ellipse cx="19" cy="54" rx="4.6" ry="2.2"/><ellipse cx="31" cy="54.5" rx="4.6" ry="2.2"/><ellipse cx="25" cy="55.5" rx="5" ry="2"/></g>';
+    } else {
+      back = moon + '<polygon points="27.6,33 50,33 50,60 45,60" fill="#0b2a3c"/><g fill="#dfe9ff"><rect x="38" y="36" width="3" height=".6"/><rect x="40" y="40" width="4" height=".6"/><rect x="43" y="45" width="4" height=".6"/></g><line x1="27.6" y1="33" x2="45" y2="60" stroke="#bff6ff" stroke-width=".7" opacity=".7"/><g stroke="#0c1f1a" stroke-width="1.3" fill="none"><path d="M6 36 Q5 26 8 18"/><path d="M8 18 Q2 16 0 20 M8 18 Q14 15 16 19 M8 18 Q5 12 2 12 M8 18 Q12 12 15 12"/></g>';
+      obst = '<path d="M24 56 Q23 46 26 38" fill="none" stroke="#dcc39a" stroke-width="2.2"/><g fill="#3f9a52"><path d="M26 38 Q19 35 17 40 Q21 37 26 38Z"/><path d="M26 38 Q33 34 35 39 Q31 36 26 38Z"/><path d="M26 38 Q23 31 19 31 Q23 33 26 38Z"/><path d="M26 38 Q30 31 34 31 Q30 33 26 38Z"/></g><circle cx="25.6" cy="39.4" r="1" fill="#5a3a20"/>';
+    }
+    return `<svg class="thumb" viewBox="0 0 50 60" preserveAspectRatio="xMidYMid slice" aria-hidden="true">${sky}${back}${road}${obst}</svg>`;
+  }
   function renderLevels() {
     ui.levels.innerHTML = '';
     LOCS.forEach((l, i) => {
       const b = document.createElement('button');
       b.type = 'button'; b.className = 'cr-lvl' + (i === selLevel ? ' sel' : '');
       b.disabled = i >= unlocked;
-      b.setAttribute('aria-label', i < unlocked ? `Уровень ${i + 1}: ${l.name}` : `Уровень ${i + 1} закрыт`);
-      b.innerHTML = i < unlocked ? `<b>${i + 1}</b><small>${l.name}</small>` : `${LOCK_SVG}<small>${i + 1}</small>`;
+      b.setAttribute('aria-label', i < unlocked ? `Level ${i + 1}: ${l.name}` : `Level ${i + 1}, locked`);
+      b.innerHTML = thumbSVG(l) + `<span class="num">${i + 1}</span>` + (i < unlocked ? '' : `<span class="lock">${LOCK_SVG}</span>`);
       b.addEventListener('click', () => selectLevel(i));
       ui.levels.appendChild(b);
     });
@@ -1817,7 +1856,7 @@ html,body{height:100dvh}
     ui.best.textContent = best;
     ui.newBest.hidden = !isBest || s === 0;
     ui.unlocked.hidden = !G.newUnlocks.length;
-    if (G.newUnlocks.length) ui.unlocked.textContent = 'Открыто: ' + G.newUnlocks.map(i => LOCS[i].name).join(', ');
+    if (G.newUnlocks.length) ui.unlocked.textContent = 'Unlocked: ' + G.newUnlocks.map(i => LOCS[i].name).join(', ');
     ui.hud.hidden = true; ui.wind.hidden = true; ui.ring.hidden = true; ui.chip.hidden = true; ui.toast.hidden = true; ui.over.hidden = false;
   }
   function endArmor() {
@@ -1871,7 +1910,7 @@ html,body{height:100dvh}
         if (idx + 1 > unlocked) {
           unlocked = idx + 1; G.newUnlocks.push(idx);
           try { localStorage.setItem('casper-run-unlocked', String(unlocked)); } catch (e) {}
-          toast('Открыт новый уровень', LOCS[idx].name);
+          toast('New level unlocked', LOCS[idx].name);
           sfx(520, 1040, 0.25, 'triangle', 0.05); sfx(780, 1560, 0.3, 'triangle', 0.04, 0.12);
         } else toast(levelLabel(seg), LOCS[idx].name);
       }
@@ -2150,7 +2189,7 @@ html,body{height:100dvh}
     const mode = G.armorT > 0 ? 'armor:' + Math.ceil(G.armorT) : 'none';
     if (mode !== lastMode) {
       ui.chip.hidden = G.armorT <= 0;
-      if (G.armorT > 0) ui.chip.textContent = `Доспехи · ${Math.ceil(G.armorT)}`;
+      if (G.armorT > 0) ui.chip.textContent = `Armor · ${Math.ceil(G.armorT)}`;
       lastMode = mode;
     }
     const lv = locIdx(G.dist + PZ) + ':' + stageOf(G.dist + PZ);

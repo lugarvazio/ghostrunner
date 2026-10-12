@@ -1,9 +1,11 @@
 # Ghost Runner
 
-3D-раннер про привидение на Three.js.
+A 3D ghost runner built with Three.js.
 
-Играть: https://lugarvazio.github.io/ghostrunner/
+Play: https://lugarvazio.github.io/ghostrunner/
 
-Управление: свайп влево и вправо меняет полосу, тап меняет форму (плотный или призрак).
+Controls: swipe left/right to change lanes, tap to switch between solid and ghost form. Keyboard: arrows and space.
 
-Уровни (открываются по очереди): Город (блоки), Сад (камни), Кладбище (надгробия), Замок (колонны), Ферма (тыквы), Метро (пассажиры), Пещера (завалы), Лес (деревья), Облака (вершины гор), Пляж (пальмы). В каждом 5 ступеней сложности. Скорость задаёт ветер — колдунчик в левом нижнем углу, эктоплазма — кольцо справа внизу.
+Levels unlock one by one as you reach them: City (blocks), Garden (rocks), Cemetery (tombstones), Castle (columns), Farm (pumpkins), Subway (passengers), Cave (rubble), Forest (trees), Clouds (mountain peaks), Beach (palms). Each level has 5 difficulty stages. Wind sets the speed — watch the windsock in the bottom-left corner; ectoplasm is the ring in the bottom-right.
+
+Progress (unlocked levels, selected level, best score) is stored in the browser's localStorage on this device.
