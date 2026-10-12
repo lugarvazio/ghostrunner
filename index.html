@@ -100,147 +100,6 @@ html,body{height:100dvh}
 
 /* уровни */
 #cr .cr-levels{margin-top:22px;width:100%;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
-#cr .cr-lvl{position:relative;min-width:0;aspect-ratio:5/6;border-radius:14px;border:1.5px solid rgba(241,235,221,.18);padding:0;overflow:hidden;cursor:pointer;background:#0d0b1a;box-shadow:0 4px 0 rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.12);transition:transform .12s}
-#cr .cr-lvl:active{transform:translateY(2px)}
-#cr .cr-lvl svg.thumb{position:absolute;inset:0;width:100%;height:100%;display:block}
-#cr .cr-lvl .num{position:absolute;left:5px;top:4px;font:400 12px/1 var(--f-display);color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.8)}
-#cr .cr-lvl.sel{border-color:var(--ecto);box-shadow:0 4px 0 #1e6b58,0 0 18px rgba(121,242,207,.5),inset 0 0 0 1px var(--ecto);animation:cr-sel 1.8s ease-in-out infinite}
-#cr .cr-lvl.sel .num{color:var(--ecto)}
-@keyframes cr-sel{50%{box-shadow:0 4px 0 #1e6b58,0 0 30px rgba(121,242,207,.75),inset 0 0 0 1px var(--ecto)}}
-#cr .cr-lvl:disabled{cursor:not-allowed;border-color:rgba(241,235,221,.08)}
-#cr .cr-lvl:disabled svg.thumb{filter:grayscale(1) brightness(.35) blur(1.2px)}
-#cr .cr-lvl .lock{position:absolute;inset:0;display:grid;place-items:center;color:rgba(241,235,221,.75)}
-#cr .cr-lvl .lock svg{width:16px;height:18px}
-#cr .cr-lvl-count{margin:10px 0 0;font:700 11px/1 var(--f-body);letter-spacing:.2em;color:var(--muted);font-variant-numeric:tabular-nums}
-
-/* кнопки: объёмные «игровые» */
-#cr .cr-btn{width:100%;margin-top:22px;padding:14px 16px 12px;border:0;border-radius:18px;cursor:pointer;font:400 22px/1 var(--f-display);letter-spacing:.06em;text-transform:uppercase;color:#062a20;
-  background:linear-gradient(180deg,#a8ffe6,#5fe3bd 55%,#3fcaa3);box-shadow:0 6px 0 #1e7a62,0 10px 24px rgba(0,0,0,.45),0 0 32px rgba(121,242,207,.35),inset 0 2px 0 rgba(255,255,255,.55);transition:transform .1s,box-shadow .1s}
-#cr .cr-btn:active{transform:translateY(4px);box-shadow:0 2px 0 #1e7a62,0 6px 14px rgba(0,0,0,.45),inset 0 2px 0 rgba(255,255,255,.55)}
-#cr .cr-btn-play{display:flex;flex-direction:column;align-items:center;gap:5px;animation:cr-pulse 2.2s ease-in-out infinite}
-#cr .cr-btn-main{display:block}
-#cr .cr-btn-sub{display:block;font:800 10px/1 var(--f-body);letter-spacing:.2em;opacity:.7}
-@keyframes cr-pulse{50%{box-shadow:0 6px 0 #1e7a62,0 10px 24px rgba(0,0,0,.45),0 0 52px rgba(121,242,207,.6),inset 0 2px 0 rgba(255,255,255,.55)}}
-#cr .cr-btn-ghost{margin-top:12px;padding:12px;font-size:16px;color:var(--bone);background:rgba(255,255,255,.06);border:1.5px solid rgba(241,235,221,.2);box-shadow:0 4px 0 rgba(0,0,0,.4);animation:none}
-#cr .cr-btn-ghost:active{box-shadow:0 1px 0 rgba(0,0,0,.4)}
-#cr button:focus-visible{outline:2px solid var(--bone);outline-offset:4px}
-#cr .cr-best{margin:14px 0 0;display:flex;align-items:center;gap:7px;font:400 16px/1 var(--f-display);color:var(--amber);font-variant-numeric:tabular-nums;text-shadow:0 0 12px rgba(255,184,77,.4)}
-#cr .cr-best svg{width:18px;height:18px}
-#cr .cr-error{margin:14px 0 0;color:var(--danger);font-size:13px}
-
-/* экран проигрыша */
-#cr .cr-ko{margin:6px 0 0;font:400 clamp(44px,13vw,62px)/1 var(--f-display);text-transform:uppercase;color:#ffd9e2;transform:rotate(-4deg);
-  text-shadow:0 3px 0 #ff6f91,0 6px 0 #b8325a,0 10px 18px rgba(0,0,0,.55);animation:cr-ko .55s cubic-bezier(.2,1.6,.4,1) both}
-#cr .cr-ko-calm{color:#f4efe2;text-shadow:0 3px 0 #a99fc9,0 6px 0 #6f6596,0 10px 18px rgba(0,0,0,.55);transform:none;animation:none}
-@keyframes cr-ko{0%{transform:rotate(-14deg) scale(1.8);opacity:0}100%{transform:rotate(-4deg) scale(1);opacity:1}}
-#cr .cr-big{margin-top:18px;display:flex;flex-direction:column;align-items:center}
-#cr .cr-big b{font:400 clamp(58px,17vw,84px)/1 var(--f-display);font-variant-numeric:tabular-nums;color:#fff;text-shadow:0 0 22px rgba(121,242,207,.55),0 4px 0 rgba(0,0,0,.35)}
-#cr .cr-big span{margin-top:4px;font:700 11px/1 var(--f-body);letter-spacing:.3em;text-transform:uppercase;color:var(--muted)}
-#cr .cr-badge{margin:14px 0 0;padding:7px 14px 6px;border-radius:99px;font:400 13px/1 var(--f-display);letter-spacing:.12em;text-transform:uppercase;color:#2a1600;background:linear-gradient(90deg,#ffcf6a,#fff2b8,#ffcf6a);background-size:200% 100%;box-shadow:0 0 22px rgba(255,200,90,.6);animation:cr-shine 1.6s linear infinite,cr-in .5s cubic-bezier(.2,1.6,.4,1) .35s both}
-@keyframes cr-shine{to{background-position:-200% 0}}
-#cr .cr-pills{margin-top:16px;display:flex;justify-content:center;gap:10px}
-#cr .cr-pill{display:flex;align-items:center;gap:8px;padding:9px 16px 8px;border-radius:99px;background:rgba(255,255,255,.07);border:1.5px solid rgba(241,235,221,.14);font:400 18px/1 var(--f-display);color:var(--bone);font-variant-numeric:tabular-nums}
-#cr .cr-pill.coin b{color:var(--amber)}
-#cr .cr-pill svg{width:18px;height:18px}
-#cr .cr-pill .cr-coin-ic{width:16px;height:16px;display:block}
-#cr .cr-unlock{margin:14px 0 0;font:700 13px/1.3 var(--f-body);letter-spacing:.06em;color:var(--ecto);text-shadow:0 0 10px rgba(121,242,207,.5)}
-</style>
-</head>
-<body>
-<title>Ghost Runner</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@500;700;800&family=Russo+One&family=Tilt+Neon&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/CopyShader.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/LuminosityHighPassShader.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/EffectComposer.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/RenderPass.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/ShaderPass.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/UnrealBloomPass.js"></script>
-<style>
-:root{color-scheme:dark}
-html,body{height:100%}
-body{background:#0b0916;margin:0}
-/* скрытые экраны должны прятаться и без обёртки артефакта (на GitHub Pages её нет) */
-[hidden]{display:none!important}
-
-/* Мобильный раннер на один экран: WebGL-canvas на весь экран, HUD и экраны поверх. */
-#cr{
-  --night:#0b0916;
-  --panel:rgba(16,12,32,.8);
-  --line:rgba(241,235,221,.14);
-  --bone:#f1ebdd;
-  --muted:#aaa3c6;
-  --ecto:#79f2cf;
-  --amber:#ffb84d;
-  --sock:#ff7a2e;
-  --steel:#cfd4de;
-  --danger:#ff7a7a;
-  --f-display:"Russo One","Arial Black",system-ui,sans-serif;
-  --f-neon:"Tilt Neon","Russo One",system-ui,sans-serif;
-  --f-body:"Exo 2",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
-  position:relative;width:100%;height:100%;min-height:480px;overflow:hidden;
-  background:var(--night);color:var(--bone);font:15px/1.45 var(--f-body);
-  user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent;
-  touch-action:none;outline:none;cursor:pointer;
-}
-#cr *{box-sizing:border-box}
-#cr canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
-
-#cr .cr-hud{position:absolute;inset:0 0 auto 0;display:flex;justify-content:space-between;align-items:flex-start;gap:12px;padding:14px 16px;pointer-events:none}
-#cr .cr-score{font:400 30px/1 var(--f-display);font-variant-numeric:tabular-nums;text-shadow:0 2px 0 rgba(0,0,0,.45)}
-#cr .cr-coins{margin-top:8px;display:flex;align-items:center;gap:7px;font-weight:600;color:var(--amber);font-variant-numeric:tabular-nums}
-#cr .cr-coin-ic{width:14px;height:14px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#ffe6b0,var(--amber) 55%,#b8700f);box-shadow:0 0 8px rgba(255,184,77,.5)}
-#cr .cr-level{margin-top:10px;display:flex;align-items:center;gap:8px;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
-#cr .cr-dots{display:flex;gap:3px}
-#cr .cr-dots i{width:6px;height:6px;border-radius:50%;background:rgba(241,235,221,.18)}
-#cr .cr-dots i.on{background:var(--bone)}
-#cr .cr-right{display:flex;align-items:flex-start;gap:12px}
-#cr .cr-energy{width:min(34vw,150px);padding-top:2px}
-#cr .cr-energy-label{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:6px;text-align:right}
-#cr .cr-bar{height:8px;border-radius:99px;background:rgba(241,235,221,.12);overflow:hidden}
-#cr .cr-bar i{display:block;height:100%;width:100%;background:var(--ecto);border-radius:inherit;box-shadow:0 0 10px var(--ecto);transform-origin:left center}
-#cr .cr-bar.low i{background:var(--danger);box-shadow:0 0 10px var(--danger)}
-#cr .cr-bar.nope{animation:cr-nope .32s}
-@keyframes cr-nope{25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
-#cr .cr-wind{position:absolute;left:14px;bottom:calc(14px + env(safe-area-inset-bottom,0px));pointer-events:none;filter:drop-shadow(0 2px 6px rgba(0,0,0,.55))}
-#cr .cr-wind svg{width:128px;height:113px;overflow:visible;display:block}
-#cr .cr-ring{position:absolute;right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));width:76px;height:76px;pointer-events:none;display:grid;place-items:center;filter:drop-shadow(0 2px 8px rgba(0,0,0,.5))}
-#cr .cr-ring svg{position:absolute;inset:0;width:100%;height:100%}
-#cr .cr-ring #cr-ring-arc{transition:stroke .2s}
-#cr .cr-ring b{position:relative;font:400 20px/1 var(--f-display);font-variant-numeric:tabular-nums;color:var(--bone)}
-#cr .cr-ring b::after{content:'%';font-size:10px;margin-left:1px;opacity:.7}
-#cr .cr-ring.low #cr-ring-arc{stroke:var(--danger)}
-#cr .cr-ring.ghost b{color:var(--ecto)}
-#cr .cr-ring.nope{animation:cr-nope .32s}
-#cr .cr-icon-btn{pointer-events:auto;flex:none;width:38px;height:38px;border-radius:50%;border:1px solid var(--line);background:rgba(16,12,32,.55);color:var(--bone);display:grid;place-items:center;cursor:pointer;padding:0}
-#cr .cr-icon-btn svg{width:18px;height:18px}
-#cr .cr-icon-btn .off{display:none}
-#cr .cr-icon-btn.muted .on{display:none}
-#cr .cr-icon-btn.muted .off{display:block}
-
-#cr .cr-chip{position:absolute;left:50%;bottom:calc(18px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);padding:8px 16px;border-radius:99px;font:400 13px/1 var(--f-display);letter-spacing:.12em;text-transform:uppercase;border:1px solid var(--line);background:rgba(16,12,32,.6);pointer-events:none;white-space:nowrap;font-variant-numeric:tabular-nums;transition:color .15s,border-color .15s,box-shadow .15s}
-#cr .cr-chip.is-ghost{color:var(--ecto);border-color:rgba(121,242,207,.55);box-shadow:0 0 18px rgba(121,242,207,.25)}
-#cr .cr-chip.is-armor{color:var(--steel);border-color:rgba(207,212,222,.6);box-shadow:0 0 18px rgba(121,242,207,.2)}
-
-#cr .cr-toast{position:absolute;left:50%;top:19%;padding:10px 18px 12px;border-radius:14px;background:rgba(16,12,32,.72);border:1px solid var(--line);text-align:center;pointer-events:none;white-space:nowrap;animation:cr-toast 2.6s ease forwards}
-#cr .cr-toast span{display:block;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
-#cr .cr-toast b{display:block;margin-top:5px;font:400 20px/1.1 var(--f-display);letter-spacing:.04em}
-@keyframes cr-toast{0%{opacity:0;transform:translate(-50%,-10px)}12%{opacity:1;transform:translate(-50%,0)}78%{opacity:1;transform:translate(-50%,0)}100%{opacity:0;transform:translate(-50%,-6px)}}
-
-/* игровые экраны: без карточек, всё по центру; мир виден сквозь мягкое затемнение */
-#cr .cr-screen{position:absolute;inset:0;display:grid;place-items:start center;padding:max(18px,6vh) 16px 16px;background:radial-gradient(120% 70% at 50% 28%,rgba(8,6,18,.82),rgba(8,6,18,.35) 60%,rgba(8,6,18,0) 85%);cursor:default;text-align:center}
-#cr .cr-front{width:100%;max-width:360px;display:flex;flex-direction:column;align-items:center;animation:cr-in .45s cubic-bezier(.2,1.4,.4,1) both}
-@keyframes cr-in{from{opacity:0;transform:translateY(-14px) scale(.96)}to{opacity:1;transform:none}}
-
-/* заголовок экрана уровней — матовый неон, как вывеска */
-#cr .cr-title{margin:0;font:400 clamp(56px,17vw,80px)/1 var(--f-neon);letter-spacing:.03em;color:rgba(190,255,236,.38);-webkit-text-stroke:1.4px rgba(186,255,234,.85);
-  text-shadow:0 0 4px rgba(121,242,207,.95),0 0 14px rgba(121,242,207,.7),0 0 34px rgba(121,242,207,.45),0 0 70px rgba(121,242,207,.25);animation:cr-flicker 6s infinite}
-@keyframes cr-flicker{0%,18%,22%,25%,53%,57%,100%{opacity:1}20%,24%,55%{opacity:.55}}
-
-/* уровни */
-#cr .cr-levels{margin-top:22px;width:100%;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
 #cr .cr-lvl{position:relative;min-width:0;aspect-ratio:1/1;border-radius:14px;border:1.5px solid rgba(241,235,221,.18);padding:0;overflow:hidden;cursor:pointer;background:#0d0b1a;box-shadow:0 4px 0 rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.12);transition:transform .12s}
 #cr .cr-lvl:active{transform:translateY(2px)}
 #cr .cr-lvl .thumb{position:absolute;inset:0;width:100%;height:100%;display:block;object-fit:cover;pointer-events:none;-webkit-user-select:none;user-select:none}
@@ -286,6 +145,9 @@ body{background:#0b0916;margin:0}
 #cr .cr-pill .cr-coin-ic{width:16px;height:16px;display:block}
 #cr .cr-unlock{margin:14px 0 0;font:700 13px/1.3 var(--f-body);letter-spacing:.06em;color:var(--ecto);text-shadow:0 0 10px rgba(121,242,207,.5)}
 </style>
+</head>
+<body>
+
 
 <div id="cr" tabindex="0" aria-label="Ghost Runner game">
   <canvas></canvas>
