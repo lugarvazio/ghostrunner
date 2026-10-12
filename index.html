@@ -5,10 +5,10 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
 <meta name="theme-color" content="#0b0916">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<title>Сквозь стены</title>
+<title>Ghost Runner</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;600&family=Unbounded:wght@600;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@500;700;800&family=Russo+One&family=Tilt+Neon&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/CopyShader.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/LuminosityHighPassShader.js"></script>
@@ -36,8 +36,9 @@ html,body{height:100dvh}
   --sock:#ff7a2e;
   --steel:#cfd4de;
   --danger:#ff7a7a;
-  --f-display:"Unbounded","Arial Black",system-ui,sans-serif;
-  --f-body:"Golos Text",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --f-display:"Russo One","Arial Black",system-ui,sans-serif;
+  --f-neon:"Tilt Neon","Russo One",system-ui,sans-serif;
+  --f-body:"Exo 2",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
   position:relative;width:100%;height:100%;min-height:480px;overflow:hidden;
   background:var(--night);color:var(--bone);font:15px/1.45 var(--f-body);
   user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent;
@@ -47,7 +48,7 @@ html,body{height:100dvh}
 #cr canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
 
 #cr .cr-hud{position:absolute;inset:0 0 auto 0;display:flex;justify-content:space-between;align-items:flex-start;gap:12px;padding:14px 16px;pointer-events:none}
-#cr .cr-score{font:800 28px/1 var(--f-display);font-variant-numeric:tabular-nums;text-shadow:0 2px 0 rgba(0,0,0,.45)}
+#cr .cr-score{font:400 30px/1 var(--f-display);font-variant-numeric:tabular-nums;text-shadow:0 2px 0 rgba(0,0,0,.45)}
 #cr .cr-coins{margin-top:8px;display:flex;align-items:center;gap:7px;font-weight:600;color:var(--amber);font-variant-numeric:tabular-nums}
 #cr .cr-coin-ic{width:14px;height:14px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#ffe6b0,var(--amber) 55%,#b8700f);box-shadow:0 0 8px rgba(255,184,77,.5)}
 #cr .cr-level{margin-top:10px;display:flex;align-items:center;gap:8px;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
@@ -67,7 +68,7 @@ html,body{height:100dvh}
 #cr .cr-ring{position:absolute;right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));width:76px;height:76px;pointer-events:none;display:grid;place-items:center;filter:drop-shadow(0 2px 8px rgba(0,0,0,.5))}
 #cr .cr-ring svg{position:absolute;inset:0;width:100%;height:100%}
 #cr .cr-ring #cr-ring-arc{transition:stroke .2s}
-#cr .cr-ring b{position:relative;font:800 19px/1 var(--f-display);font-variant-numeric:tabular-nums;color:var(--bone)}
+#cr .cr-ring b{position:relative;font:400 20px/1 var(--f-display);font-variant-numeric:tabular-nums;color:var(--bone)}
 #cr .cr-ring b::after{content:'%';font-size:10px;margin-left:1px;opacity:.7}
 #cr .cr-ring.low #cr-ring-arc{stroke:var(--danger)}
 #cr .cr-ring.ghost b{color:var(--ecto)}
@@ -78,61 +79,79 @@ html,body{height:100dvh}
 #cr .cr-icon-btn.muted .on{display:none}
 #cr .cr-icon-btn.muted .off{display:block}
 
-#cr .cr-chip{position:absolute;left:50%;bottom:calc(18px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);padding:8px 16px;border-radius:99px;font:600 11px/1 var(--f-body);letter-spacing:.16em;text-transform:uppercase;border:1px solid var(--line);background:rgba(16,12,32,.6);pointer-events:none;white-space:nowrap;font-variant-numeric:tabular-nums;transition:color .15s,border-color .15s,box-shadow .15s}
+#cr .cr-chip{position:absolute;left:50%;bottom:calc(18px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);padding:8px 16px;border-radius:99px;font:400 13px/1 var(--f-display);letter-spacing:.12em;text-transform:uppercase;border:1px solid var(--line);background:rgba(16,12,32,.6);pointer-events:none;white-space:nowrap;font-variant-numeric:tabular-nums;transition:color .15s,border-color .15s,box-shadow .15s}
 #cr .cr-chip.is-ghost{color:var(--ecto);border-color:rgba(121,242,207,.55);box-shadow:0 0 18px rgba(121,242,207,.25)}
 #cr .cr-chip.is-armor{color:var(--steel);border-color:rgba(207,212,222,.6);box-shadow:0 0 18px rgba(121,242,207,.2)}
 
 #cr .cr-toast{position:absolute;left:50%;top:19%;padding:10px 18px 12px;border-radius:14px;background:rgba(16,12,32,.72);border:1px solid var(--line);text-align:center;pointer-events:none;white-space:nowrap;animation:cr-toast 2.6s ease forwards}
 #cr .cr-toast span{display:block;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
-#cr .cr-toast b{display:block;margin-top:4px;font:800 17px/1.1 var(--f-display)}
+#cr .cr-toast b{display:block;margin-top:5px;font:400 20px/1.1 var(--f-display);letter-spacing:.04em}
 @keyframes cr-toast{0%{opacity:0;transform:translate(-50%,-10px)}12%{opacity:1;transform:translate(-50%,0)}78%{opacity:1;transform:translate(-50%,0)}100%{opacity:0;transform:translate(-50%,-6px)}}
 
-/* экраны прижаты к верху, чтобы персонаж внизу оставался виден */
-#cr .cr-screen{position:absolute;inset:0;display:grid;place-items:start center;padding:max(16px,5vh) 16px 16px;background:linear-gradient(rgba(11,9,22,.78),rgba(11,9,22,.25) 62%,rgba(11,9,22,0));cursor:default}
-#cr .cr-card{width:100%;max-width:380px;padding:22px 22px 18px;border-radius:22px;background:var(--panel);border:1px solid var(--line);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
-#cr .cr-eyebrow{margin:0 0 10px;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
-#cr h1,#cr h2{font-family:var(--f-display);font-weight:800;margin:0;line-height:.98;text-wrap:balance}
-#cr h1{font-size:clamp(34px,9.5vw,48px);letter-spacing:-.01em}
-#cr h1 em{display:block;font-style:normal;color:transparent;-webkit-text-stroke:1.6px var(--ecto);text-shadow:0 0 22px rgba(121,242,207,.45)}
-#cr h2{font-size:clamp(28px,8vw,38px)}
-#cr .cr-rules{list-style:none;margin:14px 0 0;padding:0;display:grid;gap:6px}
-#cr .cr-rules li{display:grid;grid-template-columns:26px 1fr;gap:10px;align-items:center;color:var(--muted);font-size:12.5px;line-height:1.3}
-#cr .cr-rules b{color:var(--bone);font-weight:600}
-#cr .ic{width:26px;height:26px;border-radius:7px}
-#cr .ic-wall{background:linear-gradient(#62d6ff 0 0) 50% 0/100% 2px no-repeat,linear-gradient(#62d6ff 0 0) 50% 58%/60% 2px no-repeat,#dfe3ea}
-#cr .ic-coin{border-radius:50%;width:20px;height:20px;margin:3px;background:radial-gradient(circle at 35% 35%,#ffe6b0,var(--amber) 55%,#b8700f);box-shadow:0 0 12px rgba(255,184,77,.45)}
-#cr .ic-svg{display:grid;place-items:center}
-#cr .ic-svg svg{width:24px;height:26px}
-#cr .cr-controls{margin:14px 0 0;padding-top:12px;border-top:1px solid var(--line);font-size:12px;color:var(--muted)}
-#cr .cr-btn{width:100%;margin-top:14px;padding:14px;border:0;border-radius:14px;background:var(--ecto);color:#082a21;font:800 15px/1 var(--f-display);letter-spacing:.03em;cursor:pointer;box-shadow:0 0 28px rgba(121,242,207,.3);transition:transform .12s}
-#cr .cr-btn:hover{transform:translateY(-1px)}
-#cr .cr-btn:active{transform:translateY(1px)}
-#cr button:focus-visible{outline:2px solid var(--bone);outline-offset:3px}
-#cr .cr-best{margin:10px 0 0;text-align:center;font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
-#cr .cr-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:16px}
-#cr .cr-stat{padding:12px 10px;border-radius:12px;background:rgba(241,235,221,.05);border:1px solid var(--line);min-width:0}
-#cr .cr-stat span{display:block;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
-#cr .cr-stat b{display:block;margin-top:6px;font:800 21px/1 var(--f-display);font-variant-numeric:tabular-nums}
-#cr .cr-stat.coin b{color:var(--amber)}
-#cr .cr-newbest{margin:12px 0 0;color:var(--ecto);font-weight:600;font-size:14px}
+/* игровые экраны: без карточек, всё по центру; мир виден сквозь мягкое затемнение */
+#cr .cr-screen{position:absolute;inset:0;display:grid;place-items:start center;padding:max(18px,6vh) 16px 16px;background:radial-gradient(120% 70% at 50% 28%,rgba(8,6,18,.82),rgba(8,6,18,.35) 60%,rgba(8,6,18,0) 85%);cursor:default;text-align:center}
+#cr .cr-front{width:100%;max-width:360px;display:flex;flex-direction:column;align-items:center;animation:cr-in .45s cubic-bezier(.2,1.4,.4,1) both}
+@keyframes cr-in{from{opacity:0;transform:translateY(-14px) scale(.96)}to{opacity:1;transform:none}}
+
+/* логотип: Ghost — матовая полупрозрачная неоновая трубка, Runner — плотный объёмный */
+#cr .cr-logo{margin:0;display:flex;flex-direction:column;align-items:center;line-height:.86}
+#cr .cr-neon{font:400 clamp(64px,19vw,92px)/1 var(--f-neon);letter-spacing:.02em;color:rgba(190,255,236,.38);-webkit-text-stroke:1.4px rgba(186,255,234,.85);
+  text-shadow:0 0 4px rgba(121,242,207,.95),0 0 14px rgba(121,242,207,.7),0 0 34px rgba(121,242,207,.45),0 0 70px rgba(121,242,207,.25);animation:cr-flicker 6s infinite;filter:blur(.2px)}
+@keyframes cr-flicker{0%,18%,22%,25%,53%,57%,100%{opacity:1}20%,24%,55%{opacity:.55}}
+#cr .cr-run{margin-top:-2px;font:400 clamp(38px,11.5vw,54px)/1 var(--f-display);letter-spacing:.06em;text-transform:uppercase;color:#f4efe2;
+  text-shadow:0 2px 0 #cfc6e6,0 4px 0 #a99fc9,0 6px 0 #6f6596,0 9px 14px rgba(0,0,0,.6)}
+
+/* уровни */
+#cr .cr-levels{margin-top:26px;width:100%;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
+#cr .cr-lvl{position:relative;min-width:0;aspect-ratio:1/1.12;border-radius:14px;border:1.5px solid rgba(241,235,221,.16);background:linear-gradient(180deg,rgba(255,255,255,.09),rgba(255,255,255,.02));color:var(--bone);padding:6px 3px 5px;display:grid;grid-template-rows:1fr auto;place-items:center;cursor:pointer;font:inherit;box-shadow:0 4px 0 rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.12);transition:transform .12s}
+#cr .cr-lvl:active{transform:translateY(2px)}
+#cr .cr-lvl b{font:400 22px/1 var(--f-display);font-variant-numeric:tabular-nums}
+#cr .cr-lvl small{font:700 8px/1.1 var(--f-body);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#cr .cr-lvl.sel{border-color:var(--ecto);background:linear-gradient(180deg,rgba(121,242,207,.22),rgba(121,242,207,.05));box-shadow:0 4px 0 #1e6b58,0 0 18px rgba(121,242,207,.45),inset 0 1px 0 rgba(255,255,255,.25);animation:cr-sel 1.8s ease-in-out infinite}
+#cr .cr-lvl.sel b{color:#fff;text-shadow:0 0 10px var(--ecto)}
+#cr .cr-lvl.sel small{color:var(--ecto)}
+@keyframes cr-sel{50%{box-shadow:0 4px 0 #1e6b58,0 0 28px rgba(121,242,207,.7),inset 0 1px 0 rgba(255,255,255,.25)}}
+#cr .cr-lvl:disabled{cursor:not-allowed;background:rgba(0,0,0,.35);border-color:rgba(241,235,221,.08);color:rgba(241,235,221,.35);box-shadow:inset 0 2px 6px rgba(0,0,0,.5)}
+#cr .cr-lvl svg{width:15px;height:17px}
+#cr .cr-lvl-count{margin:10px 0 0;font:700 11px/1 var(--f-body);letter-spacing:.2em;color:var(--muted);font-variant-numeric:tabular-nums}
+
+/* кнопки: объёмные «игровые» */
+#cr .cr-btn{width:100%;margin-top:22px;padding:14px 16px 12px;border:0;border-radius:18px;cursor:pointer;font:400 22px/1 var(--f-display);letter-spacing:.06em;text-transform:uppercase;color:#062a20;
+  background:linear-gradient(180deg,#a8ffe6,#5fe3bd 55%,#3fcaa3);box-shadow:0 6px 0 #1e7a62,0 10px 24px rgba(0,0,0,.45),0 0 32px rgba(121,242,207,.35),inset 0 2px 0 rgba(255,255,255,.55);transition:transform .1s,box-shadow .1s}
+#cr .cr-btn:active{transform:translateY(4px);box-shadow:0 2px 0 #1e7a62,0 6px 14px rgba(0,0,0,.45),inset 0 2px 0 rgba(255,255,255,.55)}
+#cr .cr-btn-play{display:flex;flex-direction:column;align-items:center;gap:5px;animation:cr-pulse 2.2s ease-in-out infinite}
+#cr .cr-btn-main{display:block}
+#cr .cr-btn-sub{display:block;font:800 10px/1 var(--f-body);letter-spacing:.2em;opacity:.7}
+@keyframes cr-pulse{50%{box-shadow:0 6px 0 #1e7a62,0 10px 24px rgba(0,0,0,.45),0 0 52px rgba(121,242,207,.6),inset 0 2px 0 rgba(255,255,255,.55)}}
+#cr .cr-btn-ghost{margin-top:12px;padding:12px;font-size:16px;color:var(--bone);background:rgba(255,255,255,.06);border:1.5px solid rgba(241,235,221,.2);box-shadow:0 4px 0 rgba(0,0,0,.4);animation:none}
+#cr .cr-btn-ghost:active{box-shadow:0 1px 0 rgba(0,0,0,.4)}
+#cr button:focus-visible{outline:2px solid var(--bone);outline-offset:4px}
+#cr .cr-best{margin:14px 0 0;display:flex;align-items:center;gap:7px;font:400 16px/1 var(--f-display);color:var(--amber);font-variant-numeric:tabular-nums;text-shadow:0 0 12px rgba(255,184,77,.4)}
+#cr .cr-best svg{width:18px;height:18px}
 #cr .cr-error{margin:14px 0 0;color:var(--danger);font-size:13px}
-#cr .cr-btn-ghost{margin-top:8px;background:transparent;color:var(--bone);border:1px solid var(--line);box-shadow:none}
-#cr .cr-lvl-title{margin:14px 0 8px;display:flex;justify-content:space-between;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
-#cr .cr-lvl-title span{letter-spacing:.04em;text-transform:none;font-variant-numeric:tabular-nums}
-#cr .cr-levels{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}
-#cr .cr-lvl{position:relative;min-width:0;aspect-ratio:1/1.08;border-radius:11px;border:1px solid var(--line);background:rgba(241,235,221,.05);color:var(--bone);padding:5px 3px 4px;display:grid;grid-template-rows:1fr auto;place-items:center;cursor:pointer;font:inherit}
-#cr .cr-lvl b{font:800 17px/1 var(--f-display);font-variant-numeric:tabular-nums}
-#cr .cr-lvl small{font-size:8.5px;line-height:1.1;color:var(--muted);max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-#cr .cr-lvl.sel{border-color:var(--ecto);box-shadow:0 0 0 1px var(--ecto) inset,0 0 14px rgba(121,242,207,.25)}
-#cr .cr-lvl.sel b{color:var(--ecto)}
-#cr .cr-lvl:disabled{cursor:not-allowed;opacity:.42}
-#cr .cr-lvl svg{width:14px;height:16px}
+
+/* экран проигрыша */
+#cr .cr-ko{margin:6px 0 0;font:400 clamp(44px,13vw,62px)/1 var(--f-display);text-transform:uppercase;color:#ffd9e2;transform:rotate(-4deg);
+  text-shadow:0 3px 0 #ff6f91,0 6px 0 #b8325a,0 10px 18px rgba(0,0,0,.55);animation:cr-ko .55s cubic-bezier(.2,1.6,.4,1) both}
+#cr .cr-ko-calm{color:#f4efe2;text-shadow:0 3px 0 #a99fc9,0 6px 0 #6f6596,0 10px 18px rgba(0,0,0,.55);transform:none;animation:none}
+@keyframes cr-ko{0%{transform:rotate(-14deg) scale(1.8);opacity:0}100%{transform:rotate(-4deg) scale(1);opacity:1}}
+#cr .cr-big{margin-top:18px;display:flex;flex-direction:column;align-items:center}
+#cr .cr-big b{font:400 clamp(58px,17vw,84px)/1 var(--f-display);font-variant-numeric:tabular-nums;color:#fff;text-shadow:0 0 22px rgba(121,242,207,.55),0 4px 0 rgba(0,0,0,.35)}
+#cr .cr-big span{margin-top:4px;font:700 11px/1 var(--f-body);letter-spacing:.3em;text-transform:uppercase;color:var(--muted)}
+#cr .cr-badge{margin:14px 0 0;padding:7px 14px 6px;border-radius:99px;font:400 13px/1 var(--f-display);letter-spacing:.12em;text-transform:uppercase;color:#2a1600;background:linear-gradient(90deg,#ffcf6a,#fff2b8,#ffcf6a);background-size:200% 100%;box-shadow:0 0 22px rgba(255,200,90,.6);animation:cr-shine 1.6s linear infinite,cr-in .5s cubic-bezier(.2,1.6,.4,1) .35s both}
+@keyframes cr-shine{to{background-position:-200% 0}}
+#cr .cr-pills{margin-top:16px;display:flex;justify-content:center;gap:10px}
+#cr .cr-pill{display:flex;align-items:center;gap:8px;padding:9px 16px 8px;border-radius:99px;background:rgba(255,255,255,.07);border:1.5px solid rgba(241,235,221,.14);font:400 18px/1 var(--f-display);color:var(--bone);font-variant-numeric:tabular-nums}
+#cr .cr-pill.coin b{color:var(--amber)}
+#cr .cr-pill svg{width:18px;height:18px}
+#cr .cr-pill .cr-coin-ic{width:16px;height:16px;display:block}
+#cr .cr-unlock{margin:14px 0 0;font:700 13px/1.3 var(--f-body);letter-spacing:.06em;color:var(--ecto);text-shadow:0 0 10px rgba(121,242,207,.5)}
 </style>
 </head>
 <body>
 
 
-<div id="cr" tabindex="0" aria-label="Игра «Сквозь стены»">
+<div id="cr" tabindex="0" aria-label="Игра Ghost Runner">
   <canvas></canvas>
 
   <div class="cr-hud" hidden>
@@ -172,45 +191,35 @@ html,body{height:100dvh}
   <div class="cr-toast" id="cr-toast" hidden><span id="cr-toast-sub">Уровень 1</span><b id="cr-toast-name">Город</b></div>
 
   <div class="cr-screen" id="cr-menu">
-    <div class="cr-card">
-      <p class="cr-eyebrow">Призрачный раннер · 5 уровней</p>
-      <h1>Сквозь <em>стены</em></h1>
-      <ul class="cr-rules">
-        <li><span class="ic ic-wall"></span><span><b>Препятствия</b> проходи насквозь в форме призрака</span></li>
-        <li><span class="ic ic-coin"></span><span><b>Монеты</b> собираются только в плотной форме</span></li>
-        <li><span class="ic ic-svg"><svg viewBox="0 0 28 30" aria-hidden="true"><path d="M14 1c2 0 3 2 2.5 4" stroke="#c4433a" stroke-width="3" fill="none" stroke-linecap="round"/><circle cx="14" cy="11" r="6.5" fill="#cfd4de" stroke="#23222e" stroke-width="1.2"/><rect x="9" y="10" width="10" height="2" rx="1" fill="#23222e"/><circle cx="11.5" cy="11" r="1" fill="#79f2cf"/><circle cx="16.5" cy="11" r="1" fill="#79f2cf"/><path d="M6 18h16l-3 11H9z" fill="#aeb4c2" stroke="#23222e" stroke-width="1.2"/></svg></span><span><b>Доспехи</b> вселись: ломай препятствия и собирай монеты</span></li>
-        <li><span class="ic ic-svg"><svg viewBox="0 0 28 28" aria-hidden="true"><line x1="3" y1="3" x2="3" y2="27" stroke="#aaa3c6" stroke-width="2"/><path d="M4 5l20 2v6L4 15z" fill="#ff7a2e"/><path d="M11 5.7l6 .6v6.1l-6 .9z" fill="#f1ebdd"/></svg></span><span><b>Ветер</b> разгоняет привидение — следи за колдунчиком</span></li>
-      </ul>
-      <p class="cr-controls">Свайп влево и вправо меняет полосу, тап меняет форму. На клавиатуре: стрелки и пробел.</p>
-      <p class="cr-lvl-title">Уровни <span id="cr-lvl-count">1 из 10</span></p>
+    <div class="cr-front">
+      <h1 class="cr-logo" aria-label="Ghost Runner"><span class="cr-neon">Ghost</span><span class="cr-run">Runner</span></h1>
       <div class="cr-levels" id="cr-levels"></div>
-      <button class="cr-btn" id="cr-play" type="button">Играть</button>
-      <p class="cr-best">Рекорд: <span id="cr-best">0</span></p>
+      <p class="cr-lvl-count" id="cr-lvl-count">1 / 10</p>
+      <button class="cr-btn cr-btn-play" id="cr-play" type="button"><span class="cr-btn-main">Играть</span><span class="cr-btn-sub" id="cr-play-sub">Город</span></button>
+      <p class="cr-best"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 2h10v3a5 5 0 0 1-10 0z" fill="#ffb84d"/><path d="M5 3H2v1.5A3.5 3.5 0 0 0 5.5 8M15 3h3v1.5A3.5 3.5 0 0 1 14.5 8" fill="none" stroke="#ffb84d" stroke-width="1.6"/><rect x="8.6" y="9" width="2.8" height="4" fill="#ffb84d"/><rect x="6" y="13" width="8" height="3" rx="1" fill="#ffb84d"/></svg><span id="cr-best">0</span></p>
       <p class="cr-error" id="cr-error" hidden>Браузер не поддерживает WebGL, поэтому 3D-графика не запустится.</p>
     </div>
   </div>
 
   <div class="cr-screen" id="cr-over" hidden>
-    <div class="cr-card">
-      <p class="cr-eyebrow" id="cr-cause">Врезался в стену</p>
-      <h2>Ой-ой</h2>
-      <div class="cr-stats">
-        <div class="cr-stat"><span>Очки</span><b id="cr-f-score">0</b></div>
-        <div class="cr-stat coin"><span>Монеты</span><b id="cr-f-coins">0</b></div>
-        <div class="cr-stat"><span>Рекорд</span><b id="cr-f-best">0</b></div>
+    <div class="cr-front">
+      <h2 class="cr-ko">Ой-ой!</h2>
+      <div class="cr-big"><b id="cr-f-score">0</b><span>очков</span></div>
+      <p class="cr-badge" id="cr-newbest" hidden>Новый рекорд</p>
+      <div class="cr-pills">
+        <span class="cr-pill coin"><i class="cr-coin-ic"></i><b id="cr-f-coins">0</b></span>
+        <span class="cr-pill"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 2h10v3a5 5 0 0 1-10 0z" fill="#ffb84d"/><path d="M5 3H2v1.5A3.5 3.5 0 0 0 5.5 8M15 3h3v1.5A3.5 3.5 0 0 1 14.5 8" fill="none" stroke="#ffb84d" stroke-width="1.6"/><rect x="8.6" y="9" width="2.8" height="4" fill="#ffb84d"/><rect x="6" y="13" width="8" height="3" rx="1" fill="#ffb84d"/></svg><b id="cr-f-best">0</b></span>
       </div>
-      <p class="cr-newbest" id="cr-newbest" hidden>Новый рекорд!</p>
-      <p class="cr-newbest" id="cr-unlocked" hidden></p>
-      <button class="cr-btn" id="cr-again" type="button">Ещё раз</button>
+      <p class="cr-unlock" id="cr-unlocked" hidden></p>
+      <button class="cr-btn cr-btn-play" id="cr-again" type="button"><span class="cr-btn-main">Ещё раз</span></button>
       <button class="cr-btn cr-btn-ghost" id="cr-to-levels" type="button">Уровни</button>
     </div>
   </div>
 
   <div class="cr-screen" id="cr-pause" hidden>
-    <div class="cr-card">
-      <p class="cr-eyebrow">Игра на паузе</p>
-      <h2>Пауза</h2>
-      <button class="cr-btn" id="cr-resume" type="button">Продолжить</button>
+    <div class="cr-front">
+      <h2 class="cr-ko cr-ko-calm">Пауза</h2>
+      <button class="cr-btn cr-btn-play" id="cr-resume" type="button"><span class="cr-btn-main">Продолжить</span></button>
     </div>
   </div>
 </div>
@@ -228,7 +237,7 @@ html,body{height:100dvh}
     levelName: $('cr-level-name'), dots: Array.from($('cr-dots').children),
     wind: $('cr-wind'), sock: $('cr-sock'),
     menu: $('cr-menu'), over: $('cr-over'), pause: $('cr-pause'), best: $('cr-best'),
-    cause: $('cr-cause'), fScore: $('cr-f-score'), fCoins: $('cr-f-coins'), fBest: $('cr-f-best'), newBest: $('cr-newbest')
+    playSub: $('cr-play-sub'), fScore: $('cr-f-score'), fCoins: $('cr-f-coins'), fBest: $('cr-f-best'), newBest: $('cr-newbest')
   };
   const reduceMotion = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -448,7 +457,7 @@ html,body{height:100dvh}
     g.fillStyle = '#141020'; g.fillRect(0, 0, w, h);
     g.strokeStyle = accent; g.lineWidth = 3; g.strokeRect(5, 5, w - 10, h - 10);
     g.fillStyle = '#f1ebdd'; g.textAlign = 'center'; g.textBaseline = 'middle';
-    g.font = '800 28px Unbounded, "Arial Black", sans-serif';
+    g.font = '400 30px "Russo One", "Arial Black", sans-serif';
     g.fillText(`${lvl} · ${name.toUpperCase()}`, w / 2, h / 2 + 2);
   }
   const T_signs = LOCS.map((l, i) => {
@@ -1728,8 +1737,8 @@ html,body{height:100dvh}
       b.addEventListener('click', () => selectLevel(i));
       ui.levels.appendChild(b);
     });
-    ui.lvlCount.textContent = `${unlocked} из ${LOCS.length}`;
-    ui.play.textContent = `Играть · ${LOCS[selLevel].name}`;
+    ui.lvlCount.textContent = `${unlocked} / ${LOCS.length}`;
+    ui.playSub.textContent = `${selLevel + 1} · ${LOCS[selLevel].name}`;
   }
   function selectLevel(i) {
     if (i >= unlocked) return;
@@ -1793,8 +1802,18 @@ html,body{height:100dvh}
     const s = scoreOf();
     const isBest = s > best;
     if (isBest) { best = s; try { localStorage.setItem('casper-run-best', String(best)); } catch (e) {} }
-    ui.cause.textContent = LOCS[G.causeLoc || 0].death;
-    ui.fScore.textContent = s; ui.fCoins.textContent = G.coins; ui.fBest.textContent = best;
+    ui.fCoins.textContent = G.coins; ui.fBest.textContent = best;
+    // очки «набегают» от нуля — как в аркадах
+    ui.fScore.textContent = '0';
+    const t0 = performance.now(), dur = Math.min(1400, 400 + s * 2);
+    const tick = now => {
+      const k = Math.min(1, (now - t0) / dur), e = 1 - Math.pow(1 - k, 3);
+      ui.fScore.textContent = Math.round(s * e);
+      if (k < 1 && G.state === 'over') requestAnimationFrame(tick);
+      else ui.fScore.textContent = s;
+    };
+    requestAnimationFrame(tick);
+    if (s > 0) { sfx(600, 900, 0.08, 'square', 0.025, 0.1); sfx(900, 1300, 0.1, 'square', 0.025, dur / 1000); }
     ui.best.textContent = best;
     ui.newBest.hidden = !isBest || s === 0;
     ui.unlocked.hidden = !G.newUnlocks.length;
