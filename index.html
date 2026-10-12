@@ -62,9 +62,11 @@ html,body{height:100dvh}
 #cr .cr-bar.low i{background:var(--danger);box-shadow:0 0 10px var(--danger)}
 #cr .cr-bar.nope{animation:cr-nope .32s}
 @keyframes cr-nope{25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
-#cr .cr-wind{display:flex;align-items:center;justify-content:flex-end;gap:8px;margin-top:10px;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
-#cr .cr-wind svg{width:58px;height:34px;overflow:visible;flex:none}
-#cr .cr-wind b{font:800 14px/1 var(--f-display);color:var(--bone);letter-spacing:0;font-variant-numeric:tabular-nums;min-width:.8em;text-align:right}
+#cr .cr-wind{position:absolute;left:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));display:flex;align-items:flex-end;gap:10px;pointer-events:none;filter:drop-shadow(0 2px 6px rgba(0,0,0,.5))}
+#cr .cr-wind svg{width:116px;height:124px;overflow:visible;flex:none}
+#cr .cr-wind-txt{display:grid;gap:4px;padding-bottom:2px}
+#cr .cr-wind-txt span{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+#cr .cr-wind-txt b{font:800 30px/1 var(--f-display);color:var(--bone);font-variant-numeric:tabular-nums}
 #cr .cr-icon-btn{pointer-events:auto;flex:none;width:38px;height:38px;border-radius:50%;border:1px solid var(--line);background:rgba(16,12,32,.55);color:var(--bone);display:grid;place-items:center;cursor:pointer;padding:0}
 #cr .cr-icon-btn svg{width:18px;height:18px}
 #cr .cr-icon-btn .off{display:none}
@@ -127,20 +129,6 @@ html,body{height:100dvh}
       <div class="cr-energy">
         <div class="cr-energy-label">Эктоплазма</div>
         <div class="cr-bar" id="cr-bar"><i id="cr-energy"></i></div>
-        <div class="cr-wind" aria-label="Сила ветра">
-          <span>Ветер</span>
-          <svg viewBox="0 0 60 34" aria-hidden="true">
-            <line x1="4" y1="2" x2="4" y2="34" stroke="#aaa3c6" stroke-width="2" stroke-linecap="round"/>
-            <g id="cr-sock">
-              <polygon class="seg" points="6,-2 16,-1.4 16,9.4 6,10" fill="#ff7a2e"/>
-              <polygon class="seg" points="16,-1.4 26,-0.8 26,8.8 16,9.4" fill="#f1ebdd"/>
-              <polygon class="seg" points="26,-0.8 36,-0.2 36,8.2 26,8.8" fill="#ff7a2e"/>
-              <polygon class="seg" points="36,-0.2 46,0.4 46,7.6 36,8.2" fill="#f1ebdd"/>
-              <polygon class="seg" points="46,0.4 56,1 56,7 46,7.6" fill="#ff7a2e"/>
-            </g>
-          </svg>
-          <b id="cr-wind-val">1</b>
-        </div>
       </div>
       <button class="cr-icon-btn" id="cr-mute" type="button" aria-label="Звук">
         <svg class="on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h4l5-4v14l-5-4H4z"/><path d="M16.5 8.5a5 5 0 0 1 0 7"/><path d="M19 6a8.5 8.5 0 0 1 0 12"/></svg>
@@ -149,7 +137,23 @@ html,body{height:100dvh}
     </div>
   </div>
 
-  <div class="cr-chip" id="cr-chip" hidden>Плотный</div>
+  <!-- колдунчик: крупный, в левом нижнем углу -->
+  <div class="cr-wind" id="cr-wind" aria-label="Сила ветра" hidden>
+    <svg viewBox="0 0 60 64" aria-hidden="true">
+      <line x1="4" y1="2" x2="4" y2="62" stroke="#c9c2e0" stroke-width="2.5" stroke-linecap="round"/>
+      <circle cx="4" cy="3" r="2.6" fill="#f1ebdd"/>
+      <g id="cr-sock">
+        <polygon class="seg" points="6,-2 16,-1.4 16,9.4 6,10" fill="#ff7a2e"/>
+        <polygon class="seg" points="16,-1.4 26,-0.8 26,8.8 16,9.4" fill="#f1ebdd"/>
+        <polygon class="seg" points="26,-0.8 36,-0.2 36,8.2 26,8.8" fill="#ff7a2e"/>
+        <polygon class="seg" points="36,-0.2 46,0.4 46,7.6 36,8.2" fill="#f1ebdd"/>
+        <polygon class="seg" points="46,0.4 56,1 56,7 46,7.6" fill="#ff7a2e"/>
+      </g>
+    </svg>
+    <div class="cr-wind-txt"><span>Ветер</span><b id="cr-wind-val">1</b></div>
+  </div>
+
+  <div class="cr-chip is-armor" id="cr-chip" hidden>Доспехи</div>
   <div class="cr-toast" id="cr-toast" hidden><span id="cr-toast-sub">Уровень 1</span><b id="cr-toast-name">Город</b></div>
 
   <div class="cr-screen" id="cr-menu">
@@ -202,7 +206,7 @@ html,body{height:100dvh}
     bar: $('cr-bar'), energy: $('cr-energy'), chip: $('cr-chip'), mute: $('cr-mute'),
     toast: $('cr-toast'), toastName: $('cr-toast-name'), toastSub: $('cr-toast-sub'),
     levelName: $('cr-level-name'), dots: Array.from($('cr-dots').children),
-    sock: $('cr-sock'), segs: Array.from($('cr-sock').children), windVal: $('cr-wind-val'),
+    wind: $('cr-wind'), sock: $('cr-sock'), segs: Array.from($('cr-sock').children), windVal: $('cr-wind-val'),
     menu: $('cr-menu'), over: $('cr-over'), pause: $('cr-pause'), best: $('cr-best'),
     cause: $('cr-cause'), fScore: $('cr-f-score'), fCoins: $('cr-f-coins'), fBest: $('cr-f-best'), newBest: $('cr-newbest')
   };
@@ -816,10 +820,12 @@ html,body{height:100dvh}
           }
         }
       } else if (key === 'garden') {
-        const hill = mesh(GEO.hill, M.hill, side * (24 + rr() * 30), -3, -rr() * CL);
-        hill.scale.set(20 + rr() * 18, 6 + rr() * 8, 18 + rr() * 14); g.add(hill);
+        // холм всегда стоит так, чтобы его край был минимум в 8 м от дорожки
+        const hrx = 14 + rr() * 16, hry = 5 + rr() * 6, hrz = 14 + rr() * 12;
+        const hill = mesh(GEO.hill, M.hill, side * (HALF + 8 + hrx + rr() * 14), -3, -rr() * CL);
+        hill.scale.set(hrx, hry, hrz); g.add(hill);
         for (let i = 0; i < 6; i++) {
-          const x = side * (4 + rr() * 22), z = -rr() * CL, th = 3.5 + rr() * 4.5, tr = 0.9 + rr() * 0.9;
+          const x = side * (5 + rr() * 22), z = -rr() * CL, th = 3.5 + rr() * 4.5, tr = 0.9 + rr() * 0.9;
           const t = mesh(GEO.tree, M.tree, x, th / 2 + 0.6, z); t.scale.set(tr, th, tr); g.add(t);
           const tk = mesh(GEO.cyl, M.trunk, x, 0.35, z); tk.scale.set(0.12, 0.8, 0.12); g.add(tk);
         }
@@ -1403,7 +1409,7 @@ html,body{height:100dvh}
     ptrs.clear();
     G.state = 'play';
     ui.menu.hidden = true; ui.over.hidden = true; ui.pause.hidden = true;
-    ui.hud.hidden = false; ui.chip.hidden = false;
+    ui.hud.hidden = false; ui.wind.hidden = false; ui.chip.hidden = true;
     lastMode = null; lastLevel = null;
     toast(levelLabel(0), LOCS[0].name);
     root.focus({ preventScroll: true });
@@ -1442,7 +1448,7 @@ html,body{height:100dvh}
     ui.fScore.textContent = s; ui.fCoins.textContent = G.coins; ui.fBest.textContent = best;
     ui.best.textContent = best;
     ui.newBest.hidden = !isBest || s === 0;
-    ui.hud.hidden = true; ui.chip.hidden = true; ui.toast.hidden = true; ui.over.hidden = false;
+    ui.hud.hidden = true; ui.wind.hidden = true; ui.chip.hidden = true; ui.toast.hidden = true; ui.over.hidden = false;
   }
   function endArmor() {
     G.armorT = 0; G.grace = 0.7;
@@ -1722,11 +1728,11 @@ html,body{height:100dvh}
     if (G.coins !== lastCoins) { ui.coins.textContent = G.coins; lastCoins = G.coins; }
     ui.energy.style.transform = `scaleX(${G.energy.toFixed(3)})`;
     ui.bar.classList.toggle('low', G.energy < 0.25);
-    const mode = G.armorT > 0 ? 'armor:' + Math.ceil(G.armorT) : pl.ghost ? 'ghost' : 'solid';
+    // плашка внизу появляется только на время доспехов — с обратным отсчётом
+    const mode = G.armorT > 0 ? 'armor:' + Math.ceil(G.armorT) : 'none';
     if (mode !== lastMode) {
-      ui.chip.textContent = G.armorT > 0 ? `Доспехи · ${Math.ceil(G.armorT)}` : pl.ghost ? 'Призрак' : 'Плотный';
-      ui.chip.classList.toggle('is-ghost', mode === 'ghost');
-      ui.chip.classList.toggle('is-armor', G.armorT > 0);
+      ui.chip.hidden = G.armorT <= 0;
+      if (G.armorT > 0) ui.chip.textContent = `Доспехи · ${Math.ceil(G.armorT)}`;
       lastMode = mode;
     }
     const lv = locIdx(G.dist + PZ) + ':' + stageOf(G.dist + PZ);
