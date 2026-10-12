@@ -15,6 +15,8 @@
 html,body{height:100%}
 body{background:#0b0916;margin:0;overflow:hidden}
 html,body{height:100dvh}
+/* скрытые экраны должны прятаться и без обёртки артефакта (на GitHub Pages её нет) */
+[hidden]{display:none!important}
 
 /* Мобильный раннер на один экран: WebGL-canvas на весь экран, HUD и экраны поверх. */
 #cr{
