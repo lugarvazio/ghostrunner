@@ -591,11 +591,13 @@ html,body{height:100dvh}
     } else {
       // сад: розовые арки, фонарики, кусты за краем и светлячки
       if (k % 3 === 0) {
-        g.add(mesh(GEO.rose, M.hedge, 0, 0, -4.5));
+        // высокая стрельчатая розовая арка: проходит над камерой и не рябит рядом с камнями
+        const ROSE_H = 2.0;
+        const rose = mesh(GEO.rose, M.hedge, 0, 0, -4.5); rose.scale.set(1, ROSE_H, 1); g.add(rose);
         for (let i = 0; i < 9; i++) {
           const a = Math.PI * (i + 0.5) / 9;
           const sp = glowSprite(i % 2 ? '#ffb3cf' : '#fff2f6', 0.45, 0.85);
-          sp.position.set(Math.cos(a) * 1.8, Math.sin(a) * 1.8, -4.4); g.add(sp);
+          sp.position.set(Math.cos(a) * 1.8, Math.sin(a) * 1.8 * ROSE_H, -4.4); g.add(sp);
         }
       }
       const s = k % 2 ? 1 : -1;
