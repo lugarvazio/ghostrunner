@@ -1520,10 +1520,13 @@ html,body{height:100dvh}
   function removeObj(o) { if (o.mesh) { scene.remove(o.mesh); o.mesh = null; } }
 
   // ---------- состояние ----------
+  const TEST_ALL_LEVELS = true;
   let best = 0, unlocked = 1, selLevel = 0;
   try {
     best = parseInt(localStorage.getItem('casper-run-best'), 10) || 0;
     unlocked = Math.max(1, Math.min(10, parseInt(localStorage.getItem('casper-run-unlocked'), 10) || 1));
+    // ТЕСТ: все уровни открыты, сохранённый прогресс не трогаем (выключить — false)
+    if (TEST_ALL_LEVELS) unlocked = 10;
     selLevel = Math.max(0, Math.min(unlocked - 1, parseInt(localStorage.getItem('casper-run-sel'), 10) || 0));
   } catch (e) {}
   ui.best.textContent = best;
