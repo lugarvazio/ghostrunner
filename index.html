@@ -1199,26 +1199,31 @@ html,body{height:100dvh}
     }
   }
 
-  let ptr = null;
+  // каждый палец отслеживается отдельно: один может свайпать, другой — тапать
+  const ptrs = new Map();
   root.addEventListener('pointerdown', e => {
     if (G.state !== 'play' || e.target.closest('button')) return;
-    ptr = { id: e.pointerId, x: e.clientX, y: e.clientY, moved: false };
+    ptrs.set(e.pointerId, { x: e.clientX, y: e.clientY, moved: false });
   });
   root.addEventListener('pointermove', e => {
-    if (!ptr || e.pointerId !== ptr.id) return;
-    const dx = e.clientX - ptr.x, dy = e.clientY - ptr.y;
+    const p = ptrs.get(e.pointerId);
+    if (!p) return;
+    const dx = e.clientX - p.x, dy = e.clientY - p.y;
     if (Math.abs(dx) > 28 && Math.abs(dx) > Math.abs(dy)) {
-      move(dx > 0 ? 1 : -1); ptr.x = e.clientX; ptr.y = e.clientY; ptr.moved = true;
-    } else if (dy < -40 && Math.abs(dy) > Math.abs(dx) && !ptr.moved) {
-      toggle(); ptr.moved = true; ptr.y = e.clientY;
+      move(dx > 0 ? 1 : -1); p.x = e.clientX; p.y = e.clientY; p.moved = true;
+    } else if (dy < -40 && Math.abs(dy) > Math.abs(dx) && !p.moved) {
+      toggle(); p.moved = true; p.y = e.clientY;
     }
   });
-  root.addEventListener('pointerup', e => {
-    if (!ptr || e.pointerId !== ptr.id) return;
-    if (!ptr.moved) toggle();
-    ptr = null;
-  });
-  root.addEventListener('pointercancel', () => { ptr = null; });
+  const endPtr = (e, cancelled) => {
+    const p = ptrs.get(e.pointerId);
+    if (!p) return;
+    ptrs.delete(e.pointerId);
+    if (!cancelled && !p.moved) toggle();
+  };
+  root.addEventListener('pointerup', e => endPtr(e, false));
+  root.addEventListener('pointercancel', e => endPtr(e, true));
+  root.addEventListener('lostpointercapture', e => endPtr(e, true));
 
   window.addEventListener('keydown', e => {
     const k = e.key;
@@ -1246,6 +1251,7 @@ html,body{height:100dvh}
   function start() {
     initAudio();
     reset();
+    ptrs.clear();
     G.state = 'play';
     ui.menu.hidden = true; ui.over.hidden = true; ui.pause.hidden = true;
     ui.hud.hidden = false; ui.chip.hidden = false;
