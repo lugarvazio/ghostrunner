@@ -2089,6 +2089,7 @@ html,body{height:100dvh}
     G.objs = []; G.dist = i * LOC_LEN + 10; G.startDist = G.dist; G.spawnAt = G.dist + 24;
     const L = LOCS[i];
     atmo.top.copy(L.cTop); atmo.fog.copy(L.cFog); atmo.low.copy(L.cLow); atmo.mount.copy(L.cMount); atmo.light = L.light || 1; atmo.near = L.fogNear || 45; atmo.far = L.fogFar || 260; atmo.tint.copy(L.cTint);
+    beachK = L.key === 'beach' ? 1 : 0;
   }
   function toMenu() {
     G.state = 'menu';
